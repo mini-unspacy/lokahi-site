@@ -112,7 +112,7 @@ ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, body, html, p, blockquote, fields
  .sidebar-nav .dropdown.open span.icon-caret:before, .mobile-nav .dropdown.open span.icon-caret:before { top: 5px; -webkit-transform: rotate(-135deg); -moz-transform: rotate(-135deg); -ms-transform: rotate(-135deg); transform: rotate(-135deg); }
  .sidebar-nav .dropdown.open + .wsite-menu-wrap, .mobile-nav .dropdown.open + .wsite-menu-wrap { width: 100%; max-height: 1000px; }
  .sidebar-nav .has-submenu > .dropdown span.icon-caret { padding: 12px 0 8px 10px; }
- .wsite-header-section { background: url(http://www.huilokahi.org/files/theme/images/default-bg.jpg?1773377017) no-repeat center center; background-size: cover; }
+ .wsite-header-section { background: url(files/theme/images/default-bg.jpg?1773377017) no-repeat center center; background-size: cover; }
  .header-page .wsite-header-section { height: 550px; }
  body:not(.wsite-editor) .nav-wrap { opacity: 0; -webkit-transition: opacity 500ms ease-in 300ms; -moz-transition: opacity 500ms ease-in 300ms; -ms-transition: opacity 500ms ease-in 300ms; transition: opacity 500ms ease-in 300ms; }
  body:not(.wsite-editor).fade-in .nav-wrap { opacity: 1; }
