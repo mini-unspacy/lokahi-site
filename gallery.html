@@ -624,26 +624,47 @@ jQuery(document).ready(init);
 #lokahi-lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:99999;padding:24px}
 #lokahi-lightbox.open{display:flex}
 #lokahi-lightbox img{max-width:min(95vw,1400px);max-height:90vh;box-shadow:0 10px 35px rgba(0,0,0,.5);border-radius:6px}
+#lokahi-lightbox-prev,#lokahi-lightbox-next{position:absolute;top:50%;transform:translateY(-50%);color:#fff;font-size:46px;line-height:1;cursor:pointer;font-weight:700;padding:8px 14px;background:rgba(0,0,0,.35);border-radius:8px;user-select:none}
+#lokahi-lightbox-prev{left:18px}#lokahi-lightbox-next{right:18px}
 #lokahi-lightbox-close{position:absolute;top:14px;right:18px;color:#fff;font-size:34px;line-height:1;cursor:pointer;font-weight:700}
 </style>
 <div id="lokahi-lightbox" aria-hidden="true">
   <div id="lokahi-lightbox-close" aria-label="Close">&times;</div>
+  <div id="lokahi-lightbox-prev" aria-label="Previous">&#10094;</div>
   <img id="lokahi-lightbox-img" src="" alt="Gallery image" />
+  <div id="lokahi-lightbox-next" aria-label="Next">&#10095;</div>
 </div>
 <script>
 (function(){
   var box = document.getElementById('lokahi-lightbox');
   var img = document.getElementById('lokahi-lightbox-img');
   var closeBtn = document.getElementById('lokahi-lightbox-close');
+  var prevBtn = document.getElementById('lokahi-lightbox-prev');
+  var nextBtn = document.getElementById('lokahi-lightbox-next');
   if(!box || !img) return;
+
+  var links = [];
+  var index = -1;
+  function refreshLinks(){
+    links = Array.prototype.slice.call(document.querySelectorAll('a[rel^="lightbox[gallery"]'));
+  }
+  refreshLinks();
+
+  function showAt(i){
+    if(!links.length) return;
+    index = (i + links.length) % links.length;
+    img.src = links[index].getAttribute('href');
+    box.classList.add('open');
+    box.setAttribute('aria-hidden','false');
+  }
 
   document.addEventListener('click', function(e){
     var a = e.target.closest('a[rel^="lightbox[gallery"]');
     if(!a) return;
     e.preventDefault();
-    img.src = a.getAttribute('href');
-    box.classList.add('open');
-    box.setAttribute('aria-hidden','false');
+    refreshLinks();
+    var i = links.indexOf(a);
+    showAt(i >= 0 ? i : 0);
   });
 
   function closeBox(){
@@ -652,9 +673,19 @@ jQuery(document).ready(init);
     img.removeAttribute('src');
   }
 
+  function prev(){ showAt(index - 1); }
+  function next(){ showAt(index + 1); }
+
   closeBtn && closeBtn.addEventListener('click', closeBox);
+  prevBtn && prevBtn.addEventListener('click', function(e){ e.stopPropagation(); prev(); });
+  nextBtn && nextBtn.addEventListener('click', function(e){ e.stopPropagation(); next(); });
   box.addEventListener('click', function(e){ if(e.target === box) closeBox(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeBox(); });
+  document.addEventListener('keydown', function(e){
+    if(!box.classList.contains('open')) return;
+    if(e.key === 'Escape') closeBox();
+    if(e.key === 'ArrowLeft') prev();
+    if(e.key === 'ArrowRight') next();
+  });
 })();
 </script>
 
