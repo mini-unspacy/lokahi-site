@@ -28,7 +28,7 @@
 <link rel="stylesheet" type="text/css" href="files/social-icons.css" />
 <link rel="stylesheet" type="text/css" href="files/main_style.css@1773377017.css" title="wsite-theme-css" />
 <link rel="stylesheet" type="text/css" href="files/enhancements.css" />
-<link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <style type='text/css'>
@@ -139,14 +139,14 @@ var STYLE_PREFIX = 'wsite';
 
 <link rel="icon" type="image/png" href="uploads/1/5/4/9/154955751/lokahi-circle-logo-transparent-back-150w_orig.png">
 	</head>
-	<body class="header-page  wsite-page-index  nav-position-top-right sticky-nav-on full-width-nav-on full-width-body-off header-overlay-off  wsite-theme-light"><div class="header">
+	<body class="header-page  wsite-page-index  nav-position-top-right full-width-nav-on full-width-body-off header-overlay-off  wsite-theme-light"><div class="header">
     <div class="nav-wrap">
       <div class="container">
         <a class="hamburger" aria-label="Menu" href="index.html#"><span></span></a>
         <div class="logo"><span class="wsite-logo">
 
 	<a href="index.html">
-		<img src="uploads/1/5/4/9/154955751/lokahi-logo-w-name-1.png" alt="Lokahi Outrigger Canoe Club" />
+		<span class="text-logo"><span class="text-logo-name">Lokahi</span><span class="text-logo-sub">Outrigger<br>Canoe Club</span></span>
 	</a>
 
 </span></div>
@@ -263,7 +263,7 @@ var STYLE_PREFIX = 'wsite';
 
       <div class="wsite-elements wsite-not-footer wsite-header-elements">
 	<div class="wsite-section-wrap">
-	<div  class="wsite-section wsite-header-section wsite-section-bg-image wsite-section-effect-parallax" style="height: 750px;vertical-align: top;background-image: url(uploads/1/5/4/9/154955751/background-images/1472343332.jpg) ;background-repeat: no-repeat ;background-position: 50% 50% ;background-size: 100% ;background-color: transparent ;background-size: cover;background-attachment: fixed;" >
+	<div  class="wsite-section wsite-header-section wsite-section-bg-image wsite-section-effect-parallax" style="height: 750px;vertical-align: top;background-image: url(uploads/1/5/4/9/154955751/IMG_0491.JPG) ;background-repeat: no-repeat ;background-position: 50% 50% ;background-size: 100% ;background-color: transparent ;background-size: cover;background-attachment: fixed;" >
 		<div class="wsite-section-content">
 			
           <div class="container">
@@ -359,7 +359,7 @@ var STYLE_PREFIX = 'wsite';
 
 <div class="wsite-video"><div title="Video: img_3366_134.mp4" class="wsite-video-wrapper wsite-video-height-282 wsite-video-align-left">
 	<div style="margin: 0 0 10px 0; text-align:left;">
-		<video controls preload="metadata" playsinline poster="uploads/b/154955751-619330552573174745/img_3366_134.jpg" style="width:100%; max-width:520px; max-height:42vh; height:auto; background:#000; border-radius:8px; display:block;">
+		<video controls preload="none" playsinline poster="uploads/b/154955751-619330552573174745/img_3366_134.jpg" style="width:100%; max-width:520px; max-height:42vh; height:auto; background:#000; border-radius:8px; display:block;">
 			<source src="uploads/b/154955751-619330552573174745/img_3366_134.mp4" type="video/mp4" />
 			Your browser does not support the video tag.
 		</video>
@@ -821,6 +821,11 @@ if (document.documentElement.appReady || (window.inEditor && window.inEditor()))
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   document.documentElement.classList.add('js-fade-ready');
+  document.addEventListener('click', function(e) {
+    if (document.body.classList.contains('nav-open') && !e.target.closest('.mobile-nav') && !e.target.closest('.hamburger')) {
+      document.body.classList.remove('nav-open');
+    }
+  });
   var sections = document.querySelectorAll('.fade-in-section');
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function(entries) {

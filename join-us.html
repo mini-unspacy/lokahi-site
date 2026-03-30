@@ -27,7 +27,7 @@
 <link rel="stylesheet" type="text/css" href="files/main_style.css@1773377017.css" title="wsite-theme-css" />
 <link rel="stylesheet" type="text/css" href="files/enhancements.css" />
 <link rel="icon" type="image/png" href="uploads/1/5/4/9/154955751/lokahi-circle-logo-transparent-back-150w_orig.png">
-<link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <style type='text/css'>
@@ -130,14 +130,14 @@ var STYLE_PREFIX = 'wsite';
 </script>
 
 	</head>
-	<body class="header-page  wsite-page-join-us  nav-position-top-right sticky-nav-on full-width-nav-on full-width-body-off header-overlay-off  wsite-theme-light"><div class="header">
+	<body class="header-page  wsite-page-join-us  nav-position-top-right full-width-nav-on full-width-body-off header-overlay-off  wsite-theme-light"><div class="header">
     <div class="nav-wrap">
       <div class="container">
         <a class="hamburger" aria-label="Menu" href="join-us.html#"><span></span></a>
         <div class="logo"><span class="wsite-logo">
 
 	<a href="index.html">
-		<img src="uploads/1/5/4/9/154955751/lokahi-logo-w-name-1.png" alt="Lokahi Outrigger Canoe Club" />
+		<span class="text-logo"><span class="text-logo-name">Lokahi</span><span class="text-logo-sub">Outrigger<br>Canoe Club</span></span>
 	</a>
 
 </span></div>
@@ -254,7 +254,7 @@ var STYLE_PREFIX = 'wsite';
 
       <div class="wsite-elements wsite-not-footer wsite-header-elements">
 	<div class="wsite-section-wrap">
-	<div  class="wsite-section wsite-header-section wsite-section-bg-image wsite-section-effect-reveal" style="height: 700px;background-image: url(uploads/1/5/4/9/154955751/background-images/438993432.jpg) ;background-repeat: no-repeat ;background-position: 50% 50% ;background-size: 100% ;background-color: transparent ;background-size: cover;" >
+	<div  class="wsite-section wsite-header-section wsite-section-bg-image wsite-section-effect-reveal" style="height: 700px;background-image: url(uploads/1/5/4/9/154955751/img-1855_orig.jpg) ;background-repeat: no-repeat ;background-position: 50% 60% ;background-size: cover ;background-color: transparent ;" >
 		<div class="wsite-section-content">
 			
           <div class="container">
@@ -655,6 +655,11 @@ var STYLE_PREFIX = 'wsite';
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   document.documentElement.classList.add('js-fade-ready');
+  document.addEventListener('click', function(e) {
+    if (document.body.classList.contains('nav-open') && !e.target.closest('.mobile-nav') && !e.target.closest('.hamburger')) {
+      document.body.classList.remove('nav-open');
+    }
+  });
   var sections = document.querySelectorAll('.fade-in-section');
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function(entries) {
@@ -669,6 +674,15 @@ document.addEventListener('DOMContentLoaded', function() {
   } else {
     sections.forEach(function(s) { s.classList.add('is-visible'); });
   }
+  var lastScroll = 0;
+  var header = document.querySelector('.header');
+  window.addEventListener('scroll', function() {
+    var curr = window.pageYOffset;
+    if (curr <= 0) { header.classList.remove('nav-hidden'); }
+    else if (curr > lastScroll) { header.classList.add('nav-hidden'); }
+    else { header.classList.remove('nav-hidden'); }
+    lastScroll = curr;
+  });
 });
 </script>
 	</body>

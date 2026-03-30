@@ -4,9 +4,199 @@
    ========================================================================== */
 
 /* --- Prevent horizontal overflow --- */
-html, body {
+body {
   overflow-x: hidden;
   max-width: 100vw;
+  overscroll-behavior-y: none;
+}
+
+/* --- Gothic Font --- */
+@font-face {
+    font-family: 'Old London';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Old London'), url('https://fonts.cdnfonts.com/s/7865/OldLondon.woff') format('woff');
+}
+
+/* --- Text Logo --- */
+/* --- Persistent Nav Bar --- */
+.nav-wrap {
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+/* Persistent fixed nav bar - desktop */
+@media (min-width: 768px) {
+  .header,
+  .header.stuck {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #fff;
+  }
+
+  .main-wrap {
+    padding-top: 80px;
+  }
+
+  body.header-page .main-wrap {
+    padding-top: 0;
+  }
+}
+
+/* Center Lokahi logo in nav on home page load - desktop only */
+@media (min-width: 768px) {
+  body.wsite-page-index .banner-wrap {
+    padding-top: 20px;
+    background: #000;
+  }
+
+  body.wsite-page-index .wsite-header-section .wsite-section-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}
+
+.logo,
+.logo .wsite-logo {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.logo a {
+  padding: 5px 20px 5px 0 !important;
+}
+
+.text-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 6px;
+  line-height: 1;
+  margin-top: -8px;
+  margin-left: -12px;
+}
+
+.text-logo:hover {
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.text-logo-name {
+  font-family: 'Old London', 'UnifrakturCook', cursive;
+  font-size: 76px;
+  color: #da4444;
+  -webkit-text-stroke: 2px #1a1a1a;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.text-logo-sub {
+  font-family: 'Amaranth', 'Open Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  line-height: 1.35;
+}
+
+@media (max-width: 767px) {
+  .text-logo {
+    margin-left: 0;
+  }
+  .text-logo-name {
+    font-size: 44px;
+  }
+  .text-logo-sub {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+  }
+
+  /* Compact mobile nav - dropdown near hamburger */
+  .mobile-nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: auto !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 0 !important;
+    transition: max-height 0.3s ease, padding 0.3s ease !important;
+    z-index: 9999 !important;
+  }
+
+  body.nav-open .mobile-nav {
+    max-height: 350px !important;
+    padding: 50px 0 15px !important;
+  }
+
+  .mobile-nav ul,
+  .mobile-nav li,
+  .mobile-nav .wsite-menu-default {
+    background: transparent !important;
+  }
+
+  .mobile-nav li a {
+    color: #fff !important;
+  }
+
+  .mobile-nav .hamburger span:before,
+  .mobile-nav .hamburger span:after {
+    background: #fff !important;
+  }
+
+  body.nav-open {
+    overflow: auto !important;
+  }
+
+  .mobile-nav .hamburger {
+    top: 12px !important;
+    left: 15px !important;
+  }
+
+  .mobile-nav li,
+  .mobile-nav .wsite-custom-membership-wrapper {
+    padding: 2px 0 !important;
+  }
+
+  .mobile-nav li a {
+    font-size: 15px !important;
+    padding: 8px 20px !important;
+  }
+
+  /* Fix blurry background on mobile - iOS doesn't support fixed attachment */
+  .wsite-section-effect-parallax,
+  .wsite-section[style*="background-attachment: fixed"] {
+    background-attachment: scroll !important;
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+}
+
+/* --- Standardize hero banner heights (not home page) --- */
+body:not(.wsite-page-index) .wsite-header-section {
+  height: 450px !important;
+}
+
+/* --- Compact black header sections --- */
+.wsite-section-bg-color[style*="background-color: #020202"] {
+  min-height: 0 !important;
+}
+
+.wsite-section-bg-color[style*="background-color: #020202"] .wsite-section-content {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
 }
 
 /* --- Smooth Scrolling --- */
