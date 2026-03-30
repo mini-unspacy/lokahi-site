@@ -317,6 +317,9 @@ a.wsite-button:hover {
 }
 .three-icons-section .wsite-multicol-col img {
   cursor: pointer;
+  height: 100px;
+  width: auto;
+  object-fit: contain;
 }
 .three-icons-section h2 {
   min-height: 60px;
