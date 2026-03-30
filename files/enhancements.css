@@ -307,6 +307,24 @@ a.wsite-button:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
+/* --- Three-icons section: align columns --- */
+.three-icons-section .wsite-multicol-table {
+  table-layout: fixed;
+}
+.three-icons-section .wsite-multicol-col {
+  vertical-align: top;
+  text-align: center;
+}
+.three-icons-section .wsite-multicol-col img {
+  cursor: pointer;
+}
+.three-icons-section h2 {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* --- Navigation Hover Polish --- */
 .wsite-menu-default a:hover,
 .wsite-menu a:hover {
