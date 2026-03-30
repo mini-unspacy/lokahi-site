@@ -25,6 +25,19 @@ body {
   transition: none !important;
 }
 
+/* Header hide/show on scroll - all devices */
+.header {
+  transition: transform 0.3s ease;
+}
+.header.nav-hidden {
+  transform: translateY(-100%);
+}
+
+/* Hide mobile-inline-nav on desktop */
+.mobile-inline-nav {
+  display: none;
+}
+
 /* Persistent fixed nav bar - desktop */
 @media (min-width: 768px) {
   .header,
@@ -111,15 +124,53 @@ body {
     margin-left: 0;
   }
   .text-logo-name {
-    font-size: 44px;
+    font-size: clamp(24px, 7vw, 32px);
   }
   .text-logo-sub {
     font-size: 10px;
     letter-spacing: 1.5px;
   }
 
-  /* Compact mobile nav - dropdown near hamburger */
+  /* Hide hamburger and old mobile nav on mobile */
+  .hamburger,
   .mobile-nav {
+    display: none !important;
+  }
+
+  /* Hide "Outrigger Canoe Club" subtitle on mobile */
+  .text-logo-sub.desktop-only {
+    display: none !important;
+  }
+
+  /* Inline mobile nav links */
+  .header .container {
+    display: flex !important;
+    align-items: center !important;
+  }
+  .mobile-inline-nav {
+    display: flex !important;
+    gap: 0;
+    align-items: center;
+    margin-left: auto;
+  }
+  .mobile-inline-nav a {
+    color: #333 !important;
+    font-family: 'Amaranth', sans-serif;
+    font-weight: 700;
+    font-size: clamp(11px, 3.2vw, 15px);
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 4px clamp(2px, 1vw, 6px);
+    white-space: nowrap;
+    letter-spacing: 0px;
+  }
+  .mobile-inline-nav a:hover,
+  .mobile-inline-nav a.active {
+    color: #da4444 !important;
+  }
+
+  /* Compact mobile nav - dropdown near hamburger (legacy, hidden) */
+  .mobile-nav.legacy-nav {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -175,13 +226,14 @@ body {
     padding: 8px 20px !important;
   }
 
-  /* Fix blurry background on mobile - iOS doesn't support fixed attachment */
+  /* Fix parallax on mobile - iOS doesn't support background-attachment: fixed */
   .wsite-section-effect-parallax,
   .wsite-section[style*="background-attachment: fixed"] {
     background-attachment: scroll !important;
     background-size: cover !important;
     background-position: center center !important;
   }
+
 }
 
 /* --- Standardize hero banner heights (not home page) --- */
@@ -218,6 +270,25 @@ a,
 .wsite-social-item,
 .galleryCaptionInnerText {
   transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+/* --- Button Style: match Submit button (bright red, white text) --- */
+.wsite-button,
+a.wsite-button,
+.paragraph a.wsite-button,
+.wsite-not-footer .paragraph a.wsite-button {
+  background-color: #ed1c24 !important;
+  border: none !important;
+  opacity: 1 !important;
+}
+.wsite-button .wsite-button-inner,
+a.wsite-button .wsite-button-inner,
+.paragraph a.wsite-button .wsite-button-inner {
+  color: #fff !important;
+}
+.wsite-button:hover,
+a.wsite-button:hover {
+  background-color: #d41920 !important;
 }
 
 /* --- Button Hover Effects --- */
@@ -286,18 +357,7 @@ a,
   opacity: 0.8;
 }
 
-/* --- Scroll Fade-In Animation --- */
-/* Only hide sections when JS is available to reveal them */
-.js-fade-ready .fade-in-section {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-
-.js-fade-ready .fade-in-section.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* --- Scroll Fade-In Animation (disabled for single-page layout) --- */
 
 /* --- Image Polish --- */
 .wsite-image img,
@@ -383,6 +443,44 @@ table.schedule-table {
     height: auto;
   }
 
+  /* Keep 3-icon section side-by-side on mobile */
+  .three-icons-section .wsite-multicol-table {
+    display: flex !important;
+    table-layout: auto;
+  }
+  .three-icons-section .wsite-multicol-tbody {
+    display: flex !important;
+    width: 100%;
+  }
+  .three-icons-section .wsite-multicol-tr {
+    display: flex !important;
+    width: 100%;
+  }
+  .three-icons-section .wsite-multicol-col {
+    width: 33.33% !important;
+    padding: 0 5px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .three-icons-section .wsite-multicol-col > div:last-of-type {
+    margin-top: auto;
+  }
+  .three-icons-section img {
+    width: 60px !important;
+  }
+  .three-icons-section h2 {
+    font-size: 14px !important;
+  }
+  .three-icons-section .wsite-button-inner {
+    font-size: 12px !important;
+  }
+
+  /* Hide contact sidebar (logo/address) on mobile - footer has it */
+  .contact-sidebar {
+    display: none !important;
+  }
+
   /* Larger tap targets */
   .wsite-button {
     min-height: 48px;
@@ -407,6 +505,22 @@ table.schedule-table {
   .mobile-nav .wsite-menu-default a::after {
     display: none;
   }
+}
+
+/* --- Scroll margin for anchor navigation --- */
+[id] { scroll-margin-top: 80px; }
+
+/* --- Section dividers --- */
+.section-divider {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+.section-divider img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* --- Reduce Motion for accessibility --- */
