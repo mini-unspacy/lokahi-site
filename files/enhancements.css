@@ -125,6 +125,8 @@ body {
   }
   .text-logo-name {
     font-size: clamp(24px, 7vw, 32px);
+    -webkit-text-stroke: 0 !important;
+    text-shadow: none !important;
   }
   .text-logo-sub {
     font-size: 10px;
@@ -226,14 +228,14 @@ body {
     padding: 8px 20px !important;
   }
 
-  /* Fix parallax on mobile - iOS doesn't support background-attachment: fixed */
-  .wsite-section-effect-parallax,
-  .wsite-section[style*="background-attachment: fixed"] {
-    background-attachment: scroll !important;
-    background-size: cover !important;
-    background-position: center center !important;
-  }
+}
 
+/* --- Fix parallax — background-attachment:fixed + background-size:cover is broken in many browsers --- */
+.wsite-section-effect-parallax,
+.wsite-section[style*="background-attachment: fixed"] {
+  background-attachment: scroll !important;
+  background-size: cover !important;
+  background-position: center center !important;
 }
 
 /* --- Standardize hero banner heights (not home page) --- */
