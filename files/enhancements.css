@@ -1,6 +1,6 @@
 /* ==========================================================================
    Lokahi Site Enhancements
-   Modern polish layer on top of the Weebly base theme
+   Custom enhancements for huilokahi.org
    ========================================================================== */
 
 /* --- Prevent horizontal overflow --- */
@@ -125,8 +125,8 @@ body {
   }
   .text-logo-name {
     font-size: clamp(24px, 7vw, 32px);
-    -webkit-text-stroke: 0 !important;
-    text-shadow: none !important;
+    -webkit-text-stroke: 1px #1a1a1a;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
   }
   .text-logo-sub {
     font-size: 10px;
@@ -258,7 +258,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* --- Override Weebly reveal effect (main.js removed) --- */
+/* --- Override reveal effect (main.js removed) --- */
 .wsite-section-effect-reveal .wsite-section-content > * {
   visibility: visible !important;
 }
