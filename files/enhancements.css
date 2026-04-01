@@ -235,7 +235,6 @@ body {
 .wsite-section[style*="background-attachment: fixed"] {
   background-attachment: scroll !important;
   background-size: cover !important;
-  background-position: center center !important;
 }
 
 /* --- Standardize hero banner heights (not home page) --- */
