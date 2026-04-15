@@ -346,6 +346,28 @@ blockquote {
   min-height: 600px;
 }
 
+/* --- Parallax divider (empty section with just a bg image) --- */
+.parallax-divider {
+  min-height: 400px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f4f4f4;
+}
+@media (max-width: 600px) {
+  .parallax-divider { min-height: 240px; }
+}
+
+/* --- Parallax data-layer: JS updates --parallax-offset to shift bg-position-y.
+       !important keeps longhand winning over shorthand background-position on
+       .banner / .hero / .section--parallax. --- */
+.parallax-layer {
+  background-position-y: calc(50% + var(--parallax-offset, 0px)) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .parallax-layer { background-position-y: 50% !important; }
+}
+
 /* --- Buttons --- */
 .btn {
   display: inline-flex;

@@ -3,6 +3,36 @@
 (function () {
   'use strict';
 
+  // ---- Parallax: shift bg-position-y of tagged sections at a fraction of scroll.
+  //      CSS handles the prefers-reduced-motion override; JS runs unconditionally
+  //      so the class is present (CSS then pins bg-position-y to 50% if reduced). ----
+  const PARALLAX_SELECTOR = '.hero, .banner, .section--parallax, .section--parallax-dark, .section--parallax-bare, .parallax-divider';
+  const PARALLAX_RATE = 0.35;
+  const layers = [...document.querySelectorAll(PARALLAX_SELECTOR)];
+  layers.forEach(el => el.classList.add('parallax-layer'));
+  let ticking = false;
+  function updateParallax() {
+    const vH = window.innerHeight;
+    const viewMid = vH / 2;
+    layers.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom < -vH || rect.top > vH * 2) return;
+      const elMid = rect.top + rect.height / 2;
+      const offset = Math.round((elMid - viewMid) * PARALLAX_RATE * -1);
+      el.style.setProperty('--parallax-offset', offset + 'px');
+    });
+    ticking = false;
+  }
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  updateParallax();
+
   // ---- Mobile nav toggle ----
   const burger = document.querySelector('.hamburger');
   if (burger) {
