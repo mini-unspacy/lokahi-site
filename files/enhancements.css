@@ -563,3 +563,8 @@ table.schedule-table {
     transform: none;
   }
 }
+
+/* --- Coach bios: keep the box style but drop the decorative quote glyph --- */
+blockquote.coach-bio::before,
+blockquote.coach-bio:before { content: none !important; }
+blockquote.coach-bio { padding-left: 1.5em !important; }

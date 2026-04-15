@@ -1,0 +1,18 @@
+# macOS metadata
+._*
+.DS_Store
+
+# Editor junk
+*~
+.vscode/
+.idea/
+
+# Temp
+*.bak
+*.tmp
+
+# NFS file handle stubs
+.nfs.*
+
+# Local Claude session state
+.claude/
