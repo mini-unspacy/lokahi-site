@@ -364,9 +364,6 @@ blockquote {
 .parallax-layer {
   background-position-y: calc(50% + var(--parallax-offset, 0px)) !important;
 }
-@media (prefers-reduced-motion: reduce) {
-  .parallax-layer { background-position-y: 50% !important; }
-}
 
 /* --- Buttons --- */
 .btn {

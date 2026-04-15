@@ -7,7 +7,7 @@
   //      CSS handles the prefers-reduced-motion override; JS runs unconditionally
   //      so the class is present (CSS then pins bg-position-y to 50% if reduced). ----
   const PARALLAX_SELECTOR = '.hero, .banner, .section--parallax, .section--parallax-dark, .section--parallax-bare, .parallax-divider';
-  const PARALLAX_RATE = 0.35;
+  const PARALLAX_RATE = 0.5;
   const layers = [...document.querySelectorAll(PARALLAX_SELECTOR)];
   layers.forEach(el => el.classList.add('parallax-layer'));
   let ticking = false;
@@ -41,11 +41,23 @@
       const open = document.body.classList.contains('nav-open');
       burger.setAttribute('aria-expanded', String(open));
     });
-    // Close nav on link click
-    document.querySelectorAll('.nav a').forEach(a => {
-      a.addEventListener('click', () => document.body.classList.remove('nav-open'));
-    });
   }
+
+  // ---- Smooth-scroll on anchor clicks (more reliable than scroll-behavior: smooth) ----
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const hash = a.getAttribute('href');
+      if (!hash || hash === '#') return;
+      const target = document.getElementById(hash.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      document.body.classList.remove('nav-open');
+      const navH = document.querySelector('.site-header')?.offsetHeight || 70;
+      const y = target.getBoundingClientRect().top + window.scrollY - navH - 10;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      history.pushState(null, '', hash);
+    });
+  });
 
   // ---- Header hide on scroll-down, show on scroll-up ----
   const header = document.querySelector('.site-header');
