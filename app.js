@@ -115,24 +115,65 @@
     document.querySelectorAll('.fade-in').forEach(el => el.classList.add('is-visible'));
   }
 
-  // ---- Lightbox for gallery ----
+  // ---- Lightbox for gallery (images + video) ----
   const lightbox = document.getElementById('lightbox');
-  const lightboxImg = lightbox && lightbox.querySelector('img');
-  const galleryLinks = [...document.querySelectorAll('.gallery a[data-full]')];
+  const lightboxImg = lightbox && lightbox.querySelector('.lightbox-img');
+  const lightboxVideo = lightbox && lightbox.querySelector('.lightbox-video');
+  const lightboxCounter = lightbox && lightbox.querySelector('.lightbox-counter');
+  const galleryLinks = [...document.querySelectorAll('.gallery .gallery-item')];
   let currentIndex = 0;
+
+  function stopVideo() {
+    if (!lightboxVideo) return;
+    try { lightboxVideo.pause(); } catch (_) {}
+    lightboxVideo.removeAttribute('src');
+    lightboxVideo.load();
+  }
 
   function showAt(i) {
     if (!galleryLinks.length) return;
     currentIndex = ((i % galleryLinks.length) + galleryLinks.length) % galleryLinks.length;
     const link = galleryLinks[currentIndex];
-    lightboxImg.src = link.dataset.full;
-    lightboxImg.alt = link.querySelector('img')?.alt || '';
+    const videoSrc = link.dataset.video;
+    const imgSrc = link.dataset.full;
+
+    lightbox.classList.remove('is-image', 'is-video');
+    stopVideo();
+
+    if (videoSrc) {
+      lightboxVideo.src = videoSrc;
+      if (link.dataset.poster) lightboxVideo.poster = link.dataset.poster;
+      lightbox.classList.add('is-video');
+      // Kick off loading, then auto-play — user already clicked the play icon once.
+      lightboxVideo.load();
+      const tryPlay = () => {
+        const p = lightboxVideo.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      };
+      // If already buffered (HAVE_FUTURE_DATA), play immediately; else wait for canplay.
+      if (lightboxVideo.readyState >= 3) {
+        tryPlay();
+      } else {
+        lightboxVideo.addEventListener('canplay', tryPlay, { once: true });
+        // Fallback: attempt play right away too (works in many browsers within gesture)
+        tryPlay();
+      }
+    } else if (imgSrc) {
+      lightboxImg.src = imgSrc;
+      lightboxImg.alt = link.querySelector('img')?.alt || '';
+      lightbox.classList.add('is-image');
+    }
+
+    if (lightboxCounter) {
+      lightboxCounter.textContent = (currentIndex + 1) + ' / ' + galleryLinks.length;
+    }
     lightbox.classList.add('is-open');
     document.body.style.overflow = 'hidden';
   }
   function closeBox() {
     if (!lightbox) return;
     lightbox.classList.remove('is-open');
+    stopVideo();
     document.body.style.overflow = '';
   }
 
@@ -144,9 +185,11 @@
   });
   if (lightbox) {
     lightbox.addEventListener('click', e => {
-      if (e.target === lightbox || e.target.classList.contains('lightbox-close')) closeBox();
-      else if (e.target.classList.contains('lightbox-prev')) showAt(currentIndex - 1);
-      else if (e.target.classList.contains('lightbox-next')) showAt(currentIndex + 1);
+      if (e.target === lightbox ||
+          e.target.classList.contains('lightbox-stage') ||
+          e.target.classList.contains('lightbox-close')) closeBox();
+      else if (e.target.closest('.lightbox-prev')) showAt(currentIndex - 1);
+      else if (e.target.closest('.lightbox-next')) showAt(currentIndex + 1);
     });
     document.addEventListener('keydown', e => {
       if (!lightbox.classList.contains('is-open')) return;
@@ -154,5 +197,24 @@
       else if (e.key === 'ArrowLeft') showAt(currentIndex - 1);
       else if (e.key === 'ArrowRight') showAt(currentIndex + 1);
     });
+
+    // Touch swipe navigation
+    let touchStartX = 0, touchStartY = 0, touchStartT = 0;
+    lightbox.addEventListener('touchstart', e => {
+      const t = e.changedTouches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchStartT = Date.now();
+    }, { passive: true });
+    lightbox.addEventListener('touchend', e => {
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      const dt = Date.now() - touchStartT;
+      // Horizontal swipe: at least 50px, mostly horizontal, < 600ms
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
+        showAt(currentIndex + (dx < 0 ? 1 : -1));
+      }
+    }, { passive: true });
   }
 })();
