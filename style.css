@@ -160,10 +160,19 @@ blockquote {
   gap: 24px;
   flex-wrap: wrap;
 }
-.section-divider img {
-  width: 80px;
-  height: auto;
+.section-divider img,
+.section-divider svg {
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
+}
+.section-divider svg {
+  fill: #fff;
+  opacity: .9;
+}
+.section-divider img {
+  filter: brightness(0) invert(1);
+  opacity: .9;
 }
 .section-divider h2 {
   color: #fff;
