@@ -120,11 +120,80 @@ blockquote {
 .section {
   padding: 72px 0;
 }
+.section > .container > * + * { margin-top: 0; } /* rely on element margins, not stacks */
+@media (max-width: 800px) {
+  .section { padding: 48px 0; }
+}
 .section--soft { background: var(--bg-soft); }
 .section--cream { background: var(--bg-warm); }
 .section--dark { background: var(--bg-dark); color: #f0f0f0; }
 .section--dark h2,
 .section--dark h3 { color: #fff; }
+
+/* Centered section heading utility (replaces inline text-align:center) */
+.section-title {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.form-heading { margin-top: 0; }
+
+/* Membership fees callout */
+.fees-line {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+}
+.fees-label {
+  color: var(--blue-mid);
+  font-size: 1.4rem;
+}
+
+/* Slim dark heading strip used to introduce anchor sections (Programs / Gallery / Join) */
+.section-divider {
+  background: var(--bg-dark);
+  color: #fff;
+  padding: 32px 0;
+}
+.section-divider .container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.section-divider img {
+  width: 80px;
+  height: auto;
+  flex-shrink: 0;
+}
+.section-divider h2 {
+  color: #fff;
+  margin: 0;
+}
+
+/* Quieter in-flow section intro — a red eyebrow rule + label, used when
+   a full dark divider would be too heavy */
+.eyebrow-divider {
+  text-align: center;
+  padding: 40px 0 0;
+}
+.eyebrow-divider::before {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: var(--red);
+  margin: 0 auto 14px;
+  border-radius: 2px;
+}
+.eyebrow-divider .eyebrow {
+  display: inline-block;
+  font-family: var(--font-sub);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .section--parallax {
   background-size: cover;
   background-position: center;
@@ -158,7 +227,6 @@ blockquote {
 .grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid--58-42 { grid-template-columns: 58% 42%; }
 .grid--coach { grid-template-columns: 27% 1fr; align-items: start; }
-.grid--cta3 { grid-template-columns: repeat(3, 1fr); }
 
 @media (max-width: 800px) {
   .grid--2,
@@ -302,48 +370,64 @@ blockquote {
 .hero:hover .hero-badge { transform: scale(1.03); }
 
 /* =========================================================================
-   RED INFO BANNER — Warm accent section, Lokahi's signature
+   PRACTICE STRIP — Slim dark bar right below hero with times + CTA
+   Replaces the old tall red info-banner. Same job, quieter voice.
    ========================================================================= */
-.info-banner {
+.practice-strip {
+  background: var(--ink);
+  color: #fff;
+  padding: 18px 0;
+  border-bottom: 3px solid var(--red);
+  font-family: var(--font-body);
+}
+.practice-strip .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.practice-strip-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  letter-spacing: .3px;
+}
+.practice-strip-info strong {
+  font-family: var(--font-sub);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.practice-strip-info span {
+  color: rgba(255,255,255,.85);
+}
+.practice-strip-info .sep {
+  width: 4px;
+  height: 4px;
+  background: rgba(255,255,255,.35);
+  border-radius: 50%;
+  display: inline-block;
+}
+.practice-strip .btn {
+  background: #fff;
+  color: var(--ink);
+  padding: 10px 22px;
+  min-height: 0;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+}
+.practice-strip .btn:hover {
   background: var(--red);
   color: #fff;
-  padding: 56px 0;
+  transform: translateY(-1px);
 }
-.info-banner h2 {
-  color: #fff;
-  text-align: center;
-  margin-bottom: 24px;
-}
-.info-banner-photo {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 30px rgba(0,0,0,.2);
-}
-.info-banner-text {
-  text-align: center;
-  font-size: 1.05rem;
-  line-height: 1.7;
-}
-.info-banner-text p { margin-bottom: 14px; }
-.info-banner-big { font-size: 1.5rem; }
-.info-banner-times {
-  font-size: 1.3rem;
-  line-height: 1.5;
-}
-.info-banner a,
-.info-banner a:hover { color: #fff; }
-.info-banner .btn--ghost {
-  background: #fff;
-  color: var(--red);
-  border: 2px solid #fff;
-  font-weight: 700;
-}
-.info-banner .btn--ghost:hover {
-  background: rgba(255,255,255,.9);
-  color: var(--red-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,.15);
+@media (max-width: 700px) {
+  .practice-strip .container { justify-content: center; text-align: center; }
+  .practice-strip-info { justify-content: center; }
 }
 
 /* =========================================================================
@@ -426,11 +510,6 @@ blockquote {
   .testimonial-photos img { height: 200px; }
 }
 
-/* Tall banner variant */
-.banner--tall {
-  min-height: 550px;
-}
-
 /* =========================================================================
    PARALLAX DIVIDER
    ========================================================================= */
@@ -488,47 +567,6 @@ blockquote {
   background: rgba(255,255,255,.12);
   color: #fff;
   border-color: #fff;
-}
-
-/* =========================================================================
-   THREE-ICON CTA ROW — Card-style with elevation
-   ========================================================================= */
-.cta-row {
-  background: var(--bg-dark);
-  padding: 64px 0;
-}
-.cta-card {
-  text-align: center;
-  color: #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-  padding: 32px 20px;
-  border-radius: var(--radius-lg);
-  transition: all .35s var(--ease);
-}
-.cta-card:hover {
-  background: rgba(255,255,255,.06);
-  transform: translateY(-4px);
-}
-.cta-card img {
-  width: 90px;
-  height: 90px;
-  object-fit: contain;
-  transition: transform .4s var(--ease);
-}
-.cta-card:hover img { transform: scale(1.08); }
-.cta-card h2 {
-  font-size: 1.3rem;
-  color: #e0e0e0;
-  margin: 0;
-}
-.cta-card a.cta-card-link { color: #d5d5d5; }
-.cta-card a.cta-card-link:hover { color: #fff; }
-
-@media (max-width: 800px) {
-  .grid--cta3 { grid-template-columns: 1fr; }
 }
 
 /* =========================================================================
@@ -640,7 +678,7 @@ blockquote {
 }
 @media (max-width: 1100px) { .gallery { column-count: 3; } }
 @media (max-width: 750px)  { .gallery { column-count: 2; } }
-@media (max-width: 480px)  { .gallery { column-count: 1; } }
+@media (max-width: 360px)  { .gallery { column-count: 1; } }
 
 .gallery-item {
   display: block;

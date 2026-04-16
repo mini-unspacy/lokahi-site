@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/oswald/v57/TK3_WkUHHAIjg75cFRf3bXL8LICs1y9osUZiZSSUhiCXAA.woff2" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amaranth:wght@400;700&family=Open+Sans:wght@400;600;700&family=Oswald:wght@600&display=block">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amaranth:wght@400;700&family=Open+Sans:wght@400;600;700&family=Oswald:wght@600&display=block">
-<link rel="stylesheet" href="style.css?v=20260415-gallery">
+<link rel="stylesheet" href="style.css?v=20260415-rhythm">
 
 <script type="application/ld+json">
 {
@@ -87,27 +87,23 @@
     <img class="hero-badge" src="lokahi_v3.svg" alt="Lokahi Outrigger Canoe Club logo">
   </section>
 
-  <!-- Red info banner: practice times + address -->
-  <section class="info-banner">
+  <!-- Slim practice-info strip: times + location + one CTA -->
+  <section class="practice-strip">
     <div class="container">
-      <div class="grid grid--2">
-        <img class="info-banner-photo" src="uploads/1/5/4/9/154955751/published/team-photo.webp@1771446744" alt="Lokahi team photo" loading="lazy">
-        <div class="info-banner-text">
-          <h2>JOIN OUR &lsquo;OHANA!</h2>
-          <p class="info-banner-big"><strong>All Levels of Paddlers are Welcome!</strong></p>
-          <p class="info-banner-times"><strong>Saturday 7:30 AM<br>Tuesday / Thursday 5:30 PM</strong></p>
-          <p>Mother&rsquo;s Beach 5839 E. Appian Way<br>Long Beach, CA 90802</p>
-          <p><strong>FOR MORE INFORMATION:</strong></p>
-          <p><a class="btn btn--ghost" href="#contact">Open Contact Form</a></p>
-        </div>
+      <div class="practice-strip-info">
+        <strong>Practice</strong>
+        <span>Sat 7:30 AM &middot; Tue / Thu 5:30 PM</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>Mother&rsquo;s Beach, Long Beach CA</span>
       </div>
+      <a class="btn" href="#contact">Open Contact Form</a>
     </div>
   </section>
 
   <!-- Welcome -->
   <section class="section">
     <div class="container">
-      <h2 style="text-align:center">Welcome to Lokahi Outrigger Canoe Club</h2>
+      <h2 class="section-title">Welcome to Lokahi Outrigger Canoe Club</h2>
       <div class="grid grid--58-42 fade-in">
         <div>
           <p><strong>Hui Lokahi O Ke Kai Outrigger Canoe Club</strong></p>
@@ -121,29 +117,6 @@
             Your browser does not support the video tag.
           </video>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Three CTA icons -->
-  <section class="cta-row">
-    <div class="container">
-      <div class="grid grid--cta3 fade-in">
-        <a class="cta-card cta-card-link" href="#join-us">
-          <img src="uploads/1/5/4/9/154955751/published/turtle-white-sm-100.webp@1770785435" alt="" loading="lazy">
-          <h2>Join Us and Let&rsquo;s Paddle!</h2>
-          <span class="btn">Sign Up</span>
-        </a>
-        <a class="cta-card cta-card-link" href="#programs">
-          <img src="uploads/1/5/4/9/154955751/published/mask-white-sm-100.webp@1770785430" alt="" loading="lazy">
-          <h2>Programs &amp; Schedule</h2>
-          <span class="btn">Calendar</span>
-        </a>
-        <a class="cta-card cta-card-link" href="#about">
-          <img src="uploads/1/5/4/9/154955751/published/flower-white-sm-100.webp@1770785420" alt="" loading="lazy">
-          <h2>About Lokahi</h2>
-          <span class="btn">Learn More</span>
-        </a>
       </div>
     </div>
   </section>
@@ -168,22 +141,11 @@
     </div>
   </section>
 
-  <!-- Join Our Ohana banner -->
-  <section class="banner banner--tall" style="background-image: url('uploads/1/5/4/9/154955751/background-images/1041099391.webp');">
-    <h2>Join Our &lsquo;Ohana</h2>
-  </section>
-
-  <!-- About -->
-  <section id="about" class="section section--dark" style="padding:32px 0">
-    <div class="container" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-      <img src="uploads/1/5/4/9/154955751/flower-white-sm-100_orig.webp" alt="" style="width:80px;height:auto">
-      <h2 style="margin:0">About Lokahi</h2>
-    </div>
-  </section>
-
-  <section class="section">
+  <!-- About — quieter in-flow intro instead of a full dark divider -->
+  <section id="about" class="section">
     <div class="container fade-in">
-      <h2 style="text-align:center">The Lokahi History</h2>
+      <div class="eyebrow-divider"><span class="eyebrow">About Lokahi</span></div>
+      <h2 class="section-title">The Lokahi History</h2>
       <p>Hui Lokahi O Ke Kai was founded in 1998 and is a member of the Southern California Outrigger Racing Association (SCORA). We&rsquo;re a 501(c)(3) non-profit dedicated to perpetuating Hawaiian and Polynesian culture, honoring the aloha spirit, and building community through the sport of outrigger canoeing.</p>
       <p>Our diversity is something we&rsquo;re proud of &mdash; and it&rsquo;s not just words on a website. Our members come from many countries and every walk of life: all ages, singles and couples, lifelong athletes and complete beginners. There&rsquo;s a seat for novice paddlers, recreational paddlers, and competitive racers alike. Come see for yourself.</p>
       <p>You&rsquo;ll find our canoes and shed at Mother&rsquo;s Beach on Naples Island in Long Beach, California. From those calm waters we launch our fleet of va&rsquo;a (canoes) and connect with each other, with the ocean, and with the wider outrigger community.</p>
@@ -218,7 +180,7 @@
   <!-- Spirit of Aloha (parallax) -->
   <section class="section section--parallax" style="background-image: url('uploads/1/5/4/9/154955751/background-images/1620480578.webp');">
     <div class="container fade-in">
-      <h2 style="text-align:center">Spirit of Aloha</h2>
+      <h2 class="section-title">Spirit of Aloha</h2>
       <div class="grid grid--2">
         <div>
           <p>We do our best to embody the Spirit of Aloha. The word itself means &ldquo;the presence of breath&rdquo; or &ldquo;the breath of life&rdquo; &mdash; from <em>alo</em> (presence, front, face) and <em>ha</em> (breath). Aloha is a way of living and of treating one another with love and respect. It begins with loving ourselves, and from there it flows outward to everyone we meet.</p>
@@ -236,10 +198,10 @@
   </section>
 
   <!-- Programs header -->
-  <section id="programs" class="section section--dark" style="padding:32px 0">
-    <div class="container" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-      <img src="uploads/1/5/4/9/154955751/turtle-white-sm-100_orig.webp" alt="" style="width:80px;height:auto">
-      <h2 style="margin:0">Programs, Calendar and Schedules</h2>
+  <section id="programs" class="section-divider">
+    <div class="container">
+      <img src="uploads/1/5/4/9/154955751/turtle-white-sm-100_orig.webp" alt="">
+      <h2>Programs, Calendar and Schedules</h2>
     </div>
   </section>
 
@@ -310,10 +272,10 @@
   </section>
 
   <!-- Gallery header banner -->
-  <section id="gallery" class="section section--dark" style="padding:32px 0">
-    <div class="container" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-      <img src="uploads/1/5/4/9/154955751/flower-white-sm-100_orig.webp" alt="" style="width:80px;height:auto">
-      <h2 style="margin:0">Lokahi Gallery of Photos and Videos</h2>
+  <section id="gallery" class="section-divider">
+    <div class="container">
+      <img src="uploads/1/5/4/9/154955751/flower-white-sm-100_orig.webp" alt="">
+      <h2>Lokahi Gallery of Photos and Videos</h2>
     </div>
   </section>
 
@@ -353,10 +315,10 @@
   </section>
 
   <!-- Join Us header -->
-  <section id="join-us" class="section section--dark" style="padding:32px 0">
-    <div class="container" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-      <img src="uploads/1/5/4/9/154955751/turtle-white-sm-100_orig.webp" alt="" style="width:80px;height:auto">
-      <h2 style="margin:0">Join and Paddle with Us</h2>
+  <section id="join-us" class="section-divider">
+    <div class="container">
+      <img src="uploads/1/5/4/9/154955751/turtle-white-sm-100_orig.webp" alt="">
+      <h2>Join and Paddle with Us</h2>
     </div>
   </section>
 
@@ -365,8 +327,8 @@
   <!-- Sign-Up Process -->
   <section class="section">
     <div class="container fade-in">
-      <h2 style="text-align:center">Sign-Up Process</h2>
-      <p style="text-align:center;font-size:1.1rem"><strong><span style="color:var(--blue-mid);font-size:1.4rem">Membership Fees:</span> &nbsp; OUTRIGGER MEMBERSHIP &mdash; $250 &nbsp; &bull; &nbsp; KEIKI MEMBERSHIP &mdash; $150</strong></p>
+      <h2 class="section-title">Sign-Up Process</h2>
+      <p class="fees-line"><strong><span class="fees-label">Membership Fees:</span> &nbsp; OUTRIGGER MEMBERSHIP &mdash; $250 &nbsp; &bull; &nbsp; KEIKI MEMBERSHIP &mdash; $150</strong></p>
       <p>Our season runs from mid-February through mid-December. We offer two membership options: <strong>Outrigger Membership</strong> and <strong>Keiki Membership</strong>. The Outrigger Membership is for adult competitive and recreational paddlers; the Keiki Membership is for paddlers nineteen and under. Outrigger members who want to race pay a small per-race fee for SCORA races (9-man race fees are billed separately). Non&#8209;SCORA events may carry their own fees and costs.</p>
       <p><strong>What you get with a Lokahi membership:</strong></p>
       <ul>
@@ -386,7 +348,7 @@
     <div class="container">
       <div class="grid grid--58-42">
         <form action="https://formspree.io/f/mdawpylo" method="POST" enctype="multipart/form-data">
-          <h2 style="margin-top:0">Sign Up Here</h2>
+          <h2 class="form-heading">Sign Up Here</h2>
           <p class="form-note"><span class="form-required">*</span> Indicates required field</p>
           <div class="form-row form-row--2">
             <div class="form-field">
