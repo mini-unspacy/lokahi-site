@@ -510,6 +510,12 @@ blockquote {
   border: 0;
 }
 
+/* --- Gallery section (wraps the photo grid on a black background) --- */
+.gallery-section {
+  background: var(--black);
+  padding: 32px 0 48px;
+}
+
 /* --- Gallery --- */
 .gallery {
   display: grid;
