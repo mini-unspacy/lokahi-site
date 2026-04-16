@@ -217,4 +217,29 @@
       }
     }, { passive: true });
   }
+  // ---- Cheat Sheet modal ----
+  const csOverlay = document.getElementById('cheatsheet');
+  const csOpen = document.getElementById('cheatsheet-open');
+  if (csOverlay && csOpen) {
+    const csClose = csOverlay.querySelector('.cheatsheet-close');
+    function openCheatsheet(e) {
+      e.preventDefault();
+      csOverlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      csClose.focus();
+    }
+    function closeCheatsheet() {
+      csOverlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+    csOpen.addEventListener('click', openCheatsheet);
+    csClose.addEventListener('click', closeCheatsheet);
+    csOverlay.addEventListener('click', function (e) {
+      if (e.target === csOverlay) closeCheatsheet();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && csOverlay.classList.contains('is-open')) closeCheatsheet();
+    });
+  }
+
 })();
