@@ -147,6 +147,11 @@ blockquote {
   color: var(--blue-mid);
   font-size: 1.4rem;
 }
+@media (max-width: 600px) {
+  .fees-line { font-size: .95rem; }
+  .fees-label { font-size: 1.15rem; }
+  .fees-line .fee-item { display: block; margin-top: 4px; }
+}
 
 /* Slim dark heading strip used to introduce anchor sections (Programs / Gallery / Join) */
 .section-divider {
@@ -533,6 +538,12 @@ blockquote {
   .parallax-divider { min-height: 240px; }
 }
 
+/* Map embed responsive height */
+.map-embed { height: 520px; }
+@media (max-width: 600px) {
+  .map-embed { height: 320px; }
+}
+
 .parallax-layer {
   background-position-y: calc(50% + var(--parallax-offset, 0px)) !important;
 }
@@ -644,12 +655,19 @@ blockquote {
 /* =========================================================================
    SCHEDULE TABLE — Clean, elevated card style
    ========================================================================= */
+.schedule-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0 32px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
 .schedule {
   width: 100%;
+  min-width: 480px;
   border-radius: var(--radius);
   overflow: hidden;
-  margin: 16px 0 32px;
-  box-shadow: var(--shadow-sm);
+  margin: 0;
 }
 .schedule th,
 .schedule td {
@@ -1159,12 +1177,19 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
   margin-top: 8px;
 }
 
+.cheatsheet-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0 24px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
 .cheatsheet-table {
   width: 100%;
+  min-width: 420px;
   border-radius: var(--radius);
   overflow: hidden;
-  margin: 16px 0 24px;
-  box-shadow: var(--shadow-sm);
+  margin: 0;
   font-size: .92rem;
 }
 .cheatsheet-table th,

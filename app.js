@@ -35,11 +35,20 @@
 
   // ---- Mobile nav toggle ----
   const burger = document.querySelector('.hamburger');
+  const navPanel = document.getElementById('primary-nav');
   if (burger) {
     burger.addEventListener('click', () => {
       document.body.classList.toggle('nav-open');
       const open = document.body.classList.contains('nav-open');
       burger.setAttribute('aria-expanded', String(open));
+    });
+    // Close mobile nav when tapping outside of it
+    document.addEventListener('click', (e) => {
+      if (!document.body.classList.contains('nav-open')) return;
+      if (!burger.contains(e.target) && !(navPanel && navPanel.contains(e.target))) {
+        document.body.classList.remove('nav-open');
+        burger.setAttribute('aria-expanded', 'false');
+      }
     });
   }
 
