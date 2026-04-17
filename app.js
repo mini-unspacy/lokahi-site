@@ -3,10 +3,9 @@
 (function () {
   'use strict';
 
-  // ---- Reduced-motion preference (respected by smooth-scroll; parallax is intentional) ----
-  const reducedMotion = window.matchMedia
-    ? window.matchMedia('(prefers-reduced-motion: reduce)')
-    : { matches: false };
+  // ---- Motion is intentional on this site (parallax, smooth-scroll, nav-hide);
+  //      we do NOT defer to prefers-reduced-motion. The CSS has no reduced-motion
+  //      block for the same reason — otherwise the nav-bar transition gets nuked. ----
 
   // ---- Shared scroll-lock: overlays toggle a counter so they can't clobber each other ----
   let scrollLockCount = 0;
@@ -19,9 +18,7 @@
     if (scrollLockCount === 0) document.body.classList.remove('is-locked');
   }
 
-  // ---- Parallax: shift bg-position-y of tagged sections at a fraction of scroll.
-  //      CSS handles the prefers-reduced-motion override; JS runs unconditionally
-  //      so the class is present (CSS then pins bg-position-y to 50% if reduced). ----
+  // ---- Parallax: shift bg-position-y of tagged sections at a fraction of scroll. ----
   const PARALLAX_SELECTOR = '.hero, .banner, .section--parallax, .section--parallax-dark, .section--parallax-bare, .parallax-divider';
   const PARALLAX_RATE = 0.5;
   const layers = [...document.querySelectorAll(PARALLAX_SELECTOR)];
@@ -68,7 +65,34 @@
     });
   }
 
-  // ---- Smooth-scroll on anchor clicks (more reliable than scroll-behavior: smooth) ----
+  // ---- Programmatic-scroll flag: when an anchor click triggers scrollTo,
+  //      the resulting scroll events would otherwise make the header-hide
+  //      handler think the user is manually scrolling down and retract the
+  //      bar. Flip this flag around the programmatic scroll so the handler
+  //      skips itself. Released on scrollend (Chrome 114+) with a timeout
+  //      fallback for browsers without scrollend. ----
+  let isProgrammaticScroll = false;
+  let programmaticScrollTimer = 0;
+  function beginProgrammaticScroll() {
+    isProgrammaticScroll = true;
+    if (programmaticScrollTimer) clearTimeout(programmaticScrollTimer);
+    // Timeout fallback — in case scrollend doesn't fire or nothing actually scrolled
+    programmaticScrollTimer = setTimeout(() => {
+      isProgrammaticScroll = false;
+      programmaticScrollTimer = 0;
+    }, 1500);
+  }
+  window.addEventListener('scrollend', () => {
+    if (isProgrammaticScroll) {
+      isProgrammaticScroll = false;
+      if (programmaticScrollTimer) {
+        clearTimeout(programmaticScrollTimer);
+        programmaticScrollTimer = 0;
+      }
+    }
+  });
+
+  // ---- Smooth-scroll on anchor clicks ----
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', (e) => {
       const hash = a.getAttribute('href');
@@ -80,9 +104,15 @@
         document.body.classList.remove('nav-open');
         if (burger) burger.setAttribute('aria-expanded', 'false');
       }
-      const navH = document.querySelector('.site-header')?.offsetHeight || 70;
-      const y = target.getBoundingClientRect().top + window.scrollY - navH - 10;
-      window.scrollTo({ top: y, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      // Always show the nav bar when the user navigates via a link (e.g.,
+      // from a footer link while the bar was auto-hidden after scrolling down).
+      const headerEl = document.querySelector('.site-header');
+      if (headerEl) headerEl.classList.remove('is-hidden');
+      const navH = headerEl?.offsetHeight || 70;
+      // Land the section's top edge flush with the bottom of the nav bar.
+      const y = target.getBoundingClientRect().top + window.scrollY - navH;
+      beginProgrammaticScroll();
+      window.scrollTo({ top: y, behavior: 'smooth' });
       // replaceState keeps in-page nav out of the history stack so Back leaves the site
       history.replaceState(null, '', hash);
     });
@@ -97,6 +127,9 @@
       if (!headerTicking) {
         window.requestAnimationFrame(() => {
           const y = window.scrollY;
+          // Skip hide/show while a programmatic scroll is in flight — Ken
+          // only wants the bar to retract on genuine user scroll-down.
+          if (isProgrammaticScroll) { lastY = y; headerTicking = false; return; }
           if (document.body.classList.contains('nav-open')) {
             header.classList.remove('is-hidden');
           } else if (y > lastY && y > 200) {

@@ -1071,11 +1071,9 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
   opacity: 1;
   transform: translateY(0);
 }
-@media (prefers-reduced-motion: reduce) {
-  .fade-in { opacity: 1; transform: none; }
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
-}
+/* Motion is intentional on this site (parallax, smooth-scroll, nav-hide, gallery fade-in).
+   We deliberately do NOT honor prefers-reduced-motion — it's a design choice.
+   Matches the JS side, which also ignores the preference. */
 
 /* =========================================================================
    CHEAT SHEET MODAL — Scrollable overlay matching lightbox aesthetic
