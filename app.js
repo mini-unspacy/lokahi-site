@@ -69,28 +69,21 @@
   //      the resulting scroll events would otherwise make the header-hide
   //      handler think the user is manually scrolling down and retract the
   //      bar. Flip this flag around the programmatic scroll so the handler
-  //      skips itself. Released on scrollend (Chrome 114+) with a timeout
-  //      fallback for browsers without scrollend. ----
+  //      skips itself. We use a pure timeout — scrollend is unreliable on
+  //      iOS Safari (fires mid-scroll during behavior:smooth) so relying on
+  //      it let the header retract partway through the animation. ----
   let isProgrammaticScroll = false;
   let programmaticScrollTimer = 0;
   function beginProgrammaticScroll() {
     isProgrammaticScroll = true;
     if (programmaticScrollTimer) clearTimeout(programmaticScrollTimer);
-    // Timeout fallback — in case scrollend doesn't fire or nothing actually scrolled
     programmaticScrollTimer = setTimeout(() => {
       isProgrammaticScroll = false;
       programmaticScrollTimer = 0;
-    }, 1500);
+      const h = document.querySelector('.site-header');
+      if (h) h.classList.remove('is-pinned');
+    }, 1100);
   }
-  window.addEventListener('scrollend', () => {
-    if (isProgrammaticScroll) {
-      isProgrammaticScroll = false;
-      if (programmaticScrollTimer) {
-        clearTimeout(programmaticScrollTimer);
-        programmaticScrollTimer = 0;
-      }
-    }
-  });
 
   // ---- Smooth-scroll on anchor clicks ----
   document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -100,19 +93,39 @@
       const target = document.getElementById(hash.slice(1));
       if (!target) return;
       e.preventDefault();
-      if (document.body.classList.contains('nav-open')) {
+
+      const wasNavOpen = document.body.classList.contains('nav-open');
+      const headerEl = document.querySelector('.site-header');
+
+      // Pin the header visible for the whole flow. `is-pinned` hard-wins over
+      // the scroll-hide handler so even spurious scroll events on iOS can't
+      // retract the bar mid-animation.
+      if (headerEl) {
+        headerEl.classList.remove('is-hidden');
+        headerEl.classList.add('is-pinned');
+      }
+      beginProgrammaticScroll();
+
+      if (wasNavOpen) {
         document.body.classList.remove('nav-open');
         if (burger) burger.setAttribute('aria-expanded', 'false');
       }
-      // Always show the nav bar when the user navigates via a link (e.g.,
-      // from a footer link while the bar was auto-hidden after scrolling down).
-      const headerEl = document.querySelector('.site-header');
-      if (headerEl) headerEl.classList.remove('is-hidden');
-      const navH = headerEl?.offsetHeight || 70;
-      // Land the section's top edge flush with the bottom of the nav bar.
-      const y = target.getBoundingClientRect().top + window.scrollY - navH;
-      beginProgrammaticScroll();
-      window.scrollTo({ top: y, behavior: 'smooth' });
+
+      // Defer the actual scroll by one frame so the menu-close transform can
+      // start on its own compositor frame before the smooth scroll begins —
+      // overlapping them on iOS caused the header to visibly flicker.
+      const doScroll = () => {
+        const navH = (headerEl && headerEl.offsetHeight) || 70;
+        const y = target.getBoundingClientRect().top + window.scrollY - navH;
+        beginProgrammaticScroll();
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      };
+      if (wasNavOpen) {
+        requestAnimationFrame(() => requestAnimationFrame(doScroll));
+      } else {
+        doScroll();
+      }
+
       // replaceState keeps in-page nav out of the history stack so Back leaves the site
       history.replaceState(null, '', hash);
     });
@@ -127,9 +140,11 @@
       if (!headerTicking) {
         window.requestAnimationFrame(() => {
           const y = window.scrollY;
-          // Skip hide/show while a programmatic scroll is in flight — Ken
-          // only wants the bar to retract on genuine user scroll-down.
-          if (isProgrammaticScroll) { lastY = y; headerTicking = false; return; }
+          // Skip hide/show while a programmatic scroll is in flight or the
+          // header has been explicitly pinned (e.g., during anchor nav).
+          if (isProgrammaticScroll || header.classList.contains('is-pinned')) {
+            lastY = y; headerTicking = false; return;
+          }
           if (document.body.classList.contains('nav-open')) {
             header.classList.remove('is-hidden');
           } else if (y > lastY && y > 200) {

@@ -264,6 +264,8 @@ blockquote {
   transition: transform .35s var(--ease);
 }
 .site-header.is-hidden { transform: translateY(-100%); }
+/* Hard-pin the header visible during anchor navigation — wins over .is-hidden. */
+.site-header.is-pinned { transform: translateY(0) !important; }
 .site-header > .container {
   height: 100%;
   display: flex;
@@ -1114,34 +1116,53 @@ body.nav-open .hamburger span { background: transparent; }
 body.nav-open .hamburger span::before { transform: rotate(45deg) translate(5px, 5px); }
 body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px, -5px); }
 
+/* On desktop the wrap is invisible in layout — children act as if they're
+   direct children of .site-header > .container. */
+.nav-wrap { display: contents; }
+
 @media (max-width: 800px) {
   .hamburger { display: inline-flex; align-items: center; justify-content: center; }
-  .nav {
+
+  /* Mobile menu container: anchored to the bottom of the nav bar and clips
+     everything above its own top edge. The menu reveals/hides by animating
+     grid-template-rows from 0fr -> 1fr, which expands its visible height
+     from zero to its intrinsic content height. Because the wrapper has
+     overflow: hidden, the menu can never draw over the nav bar. */
+  .nav-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
     position: fixed;
     top: var(--nav-h);
     left: 0; right: 0;
-    background: rgba(255,255,255,.97);
+    max-height: calc(100vh - var(--nav-h));
+    overflow: hidden;
+    background: rgba(255, 255, 255, .97);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .1);
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+    /* visibility flip is delayed on close so the collapse animation plays,
+       but flips on immediately when opening. */
+    visibility: hidden;
+    transition: grid-template-rows .35s var(--ease),
+                visibility 0s linear .35s;
+  }
+  body.nav-open .nav-wrap {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows .35s var(--ease);
+  }
+
+  .nav {
+    /* min-height:0 lets the grid row shrink below content's min content size */
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
     padding: 8px 0;
-    transform: translateY(-120%);
-    /* visibility change is delayed until after the slide-out finishes so the
-       close animation is visible; it flips on immediately when opening */
-    visibility: hidden;
-    transition: transform .35s var(--ease), visibility 0s linear .35s;
-    max-height: calc(100vh - var(--nav-h));
-    overflow-y: auto;
-    box-shadow: 0 8px 30px rgba(0,0,0,.1);
-    border-bottom-left-radius: var(--radius-lg);
-    border-bottom-right-radius: var(--radius-lg);
-  }
-  body.nav-open .nav {
-    transform: translateY(0);
-    visibility: visible;
-    transition: transform .35s var(--ease);
   }
   .nav a {
     color: var(--ink);
