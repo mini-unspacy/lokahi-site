@@ -68,21 +68,30 @@
   // ---- Programmatic-scroll flag: when an anchor click triggers scrollTo,
   //      the resulting scroll events would otherwise make the header-hide
   //      handler think the user is manually scrolling down and retract the
-  //      bar. Flip this flag around the programmatic scroll so the handler
-  //      skips itself. We use a pure timeout — scrollend is unreliable on
-  //      iOS Safari (fires mid-scroll during behavior:smooth) so relying on
-  //      it let the header retract partway through the animation. ----
+  //      bar. We keep the flag set until (a) we've landed at the target,
+  //      (b) scroll events go idle (~200ms without a scroll), or (c) a
+  //      5s safety fallback. scrollend is unreliable on iOS Safari (fires
+  //      mid-animation during behavior:smooth) so we don't use it. ----
   let isProgrammaticScroll = false;
-  let programmaticScrollTimer = 0;
-  function beginProgrammaticScroll() {
+  let programmaticScrollTarget = -1;
+  let programmaticScrollIdleTimer = 0;
+  let programmaticScrollFallbackTimer = 0;
+  function endProgrammaticScroll() {
+    isProgrammaticScroll = false;
+    programmaticScrollTarget = -1;
+    if (programmaticScrollIdleTimer) { clearTimeout(programmaticScrollIdleTimer); programmaticScrollIdleTimer = 0; }
+    if (programmaticScrollFallbackTimer) { clearTimeout(programmaticScrollFallbackTimer); programmaticScrollFallbackTimer = 0; }
+    const h = document.querySelector('.site-header');
+    if (h) h.classList.remove('is-pinned');
+  }
+  function beginProgrammaticScroll(targetY) {
     isProgrammaticScroll = true;
-    if (programmaticScrollTimer) clearTimeout(programmaticScrollTimer);
-    programmaticScrollTimer = setTimeout(() => {
-      isProgrammaticScroll = false;
-      programmaticScrollTimer = 0;
-      const h = document.querySelector('.site-header');
-      if (h) h.classList.remove('is-pinned');
-    }, 1100);
+    programmaticScrollTarget = typeof targetY === 'number' ? targetY : -1;
+    if (programmaticScrollIdleTimer) { clearTimeout(programmaticScrollIdleTimer); programmaticScrollIdleTimer = 0; }
+    if (programmaticScrollFallbackTimer) clearTimeout(programmaticScrollFallbackTimer);
+    // Safety net: in case no scroll ever fires (e.g. already at target) or
+    // something else wedges, guarantee the flag clears within 5s.
+    programmaticScrollFallbackTimer = setTimeout(endProgrammaticScroll, 5000);
   }
 
   // ---- Smooth-scroll on anchor clicks ----
@@ -104,6 +113,9 @@
         headerEl.classList.remove('is-hidden');
         headerEl.classList.add('is-pinned');
       }
+      // Claim programmatic-scroll protection immediately. The real target Y
+      // is computed inside doScroll() below (after any layout changes from
+      // closing the mobile menu) and re-bound there.
       beginProgrammaticScroll();
 
       if (wasNavOpen) {
@@ -117,7 +129,7 @@
       const doScroll = () => {
         const navH = (headerEl && headerEl.offsetHeight) || 70;
         const y = target.getBoundingClientRect().top + window.scrollY - navH;
-        beginProgrammaticScroll();
+        beginProgrammaticScroll(y);
         window.scrollTo({ top: y, behavior: 'smooth' });
       };
       if (wasNavOpen) {
@@ -142,7 +154,19 @@
           const y = window.scrollY;
           // Skip hide/show while a programmatic scroll is in flight or the
           // header has been explicitly pinned (e.g., during anchor nav).
+          // We end programmatic mode the instant we've reached the target,
+          // or when scroll events go idle for ~200ms (indicating the smooth
+          // scroll has stopped) — this way a long scroll stays pinned for
+          // however many seconds it actually takes, not a fixed timeout.
           if (isProgrammaticScroll || header.classList.contains('is-pinned')) {
+            const atTarget = programmaticScrollTarget >= 0 &&
+                             Math.abs(y - programmaticScrollTarget) < 2;
+            if (atTarget) {
+              endProgrammaticScroll();
+            } else {
+              if (programmaticScrollIdleTimer) clearTimeout(programmaticScrollIdleTimer);
+              programmaticScrollIdleTimer = setTimeout(endProgrammaticScroll, 200);
+            }
             lastY = y; headerTicking = false; return;
           }
           if (document.body.classList.contains('nav-open')) {
