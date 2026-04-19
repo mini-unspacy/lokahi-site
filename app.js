@@ -364,4 +364,39 @@
     syncCheatsheetFromHash();
   }
 
+  // ---- Copy-to-clipboard icon buttons (e.g., Zelle email) ----
+  // Toggles .is-copied for ~1.4s; CSS swaps the icon and shows the tooltip.
+  document.querySelectorAll('.copy-btn').forEach(function (btn) {
+    const value = btn.getAttribute('data-copy') || '';
+    let resetTimer = null;
+    function flashCopied() {
+      btn.classList.add('is-copied');
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        btn.classList.remove('is-copied');
+      }, 1400);
+    }
+    btn.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(flashCopied).catch(function () {
+          fallbackCopy(value, flashCopied);
+        });
+      } else {
+        fallbackCopy(value, flashCopied);
+      }
+    });
+  });
+  function fallbackCopy(text, onDone) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* no-op */ }
+    document.body.removeChild(ta);
+    if (onDone) onDone();
+  }
+
 })();
