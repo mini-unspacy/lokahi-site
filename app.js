@@ -303,14 +303,16 @@
     }, { passive: true });
   }
   // ---- Cheat Sheet modal ----
+  // Shareable deep link: visiting huilokahi.org/#cheatsheet opens the modal
+  // automatically, and opening/closing it via UI keeps the URL in sync.
   const csOverlay = document.getElementById('cheatsheet');
   const csOpen = document.getElementById('cheatsheet-open');
   if (csOverlay && csOpen) {
     const csClose = csOverlay.querySelector('.cheatsheet-close');
+    const CS_HASH = '#cheatsheet';
     let csReturnFocus = null;
     let csIsOpen = false;
-    function openCheatsheet(e) {
-      e.preventDefault();
+    function openCheatsheet() {
       if (csIsOpen) return;
       csReturnFocus = document.activeElement;
       csOverlay.classList.add('is-open');
@@ -327,8 +329,29 @@
         csReturnFocus.focus();
       }
       csReturnFocus = null;
+      // Drop the hash from the URL without adding a history entry, so closing
+      // the modal leaves a clean shareable URL behind.
+      if (location.hash === CS_HASH) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
     }
-    csOpen.addEventListener('click', openCheatsheet);
+    function syncCheatsheetFromHash() {
+      if (location.hash === CS_HASH) {
+        openCheatsheet();
+      } else if (csIsOpen) {
+        closeCheatsheet();
+      }
+    }
+    csOpen.addEventListener('click', function (e) {
+      e.preventDefault();
+      // Setting the hash triggers hashchange -> openCheatsheet, and makes the
+      // current URL a shareable deep link to the modal.
+      if (location.hash === CS_HASH) {
+        openCheatsheet();
+      } else {
+        location.hash = 'cheatsheet';
+      }
+    });
     csClose.addEventListener('click', closeCheatsheet);
     csOverlay.addEventListener('click', function (e) {
       if (e.target === csOverlay) closeCheatsheet();
@@ -336,6 +359,9 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && csIsOpen) closeCheatsheet();
     });
+    window.addEventListener('hashchange', syncCheatsheetFromHash);
+    // Handle the case where the page is loaded with #cheatsheet already set.
+    syncCheatsheetFromHash();
   }
 
 })();
