@@ -119,6 +119,15 @@
       // manually scrolls (wheel / touchstart / keydown).
       beginProgrammaticScroll();
 
+      // Update the active nav underline immediately. The IntersectionObserver
+      // below is unreliable for short sections (e.g. #about) which can slip
+      // past the observer's thin rootMargin band before the smooth scroll
+      // lands, leaving the underline stuck on the previous link.
+      const allNavLinks = document.querySelectorAll('.nav a[href^="#"]');
+      allNavLinks.forEach(l => l.classList.remove('is-active'));
+      const clickedNavLink = [...allNavLinks].find(l => l.getAttribute('href') === hash);
+      if (clickedNavLink) clickedNavLink.classList.add('is-active');
+
       if (wasNavOpen) {
         document.body.classList.remove('nav-open');
         if (burger) burger.setAttribute('aria-expanded', 'false');
@@ -181,6 +190,9 @@
   if (sections.length && navLinks.length && 'IntersectionObserver' in window) {
     const linkFor = id => navLinks.find(a => a.getAttribute('href') === '#' + id);
     const obs = new IntersectionObserver(entries => {
+      // Don't fight the click handler during programmatic scrolls — the click
+      // handler has already set the correct active link for the destination.
+      if (isProgrammaticScroll) return;
       entries.forEach(e => {
         if (e.isIntersecting) {
           navLinks.forEach(a => a.classList.remove('is-active'));
