@@ -216,15 +216,15 @@ blockquote {
   z-index: 2;
 }
 .section-divider--photo::after {
-  /* Dark gradient overlay so the title stays legible against any photo */
+  /* Soft left-anchored darkening — just enough for the white title to read,
+     fading out by ~60% so most of the photo stays visible. */
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg,
-    rgba(0, 0, 0, .65) 0%,
-    rgba(0, 0, 0, .45) 40%,
-    rgba(0, 0, 0, .15) 75%,
-    rgba(0, 0, 0, 0) 100%);
+    rgba(0, 0, 0, .55) 0%,
+    rgba(0, 0, 0, .30) 35%,
+    rgba(0, 0, 0, 0) 60%);
   z-index: 1;
 }
 .section-divider--photo > .container {
