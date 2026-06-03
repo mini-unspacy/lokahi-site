@@ -1408,6 +1408,176 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
 .cheatsheet-table em { color: var(--muted); }
 
 /* =========================================================================
+   PADDLING GUIDE MODAL (wide variant of the cheat-sheet modal)
+   ========================================================================= */
+.cheatsheet-panel--wide { width: min(96vw, 1080px); max-height: 92vh; }
+
+.pg-body { line-height: 1.7; }
+
+/* Hero */
+.pg-hero { text-align: center; padding: 8px 0 4px; }
+.pg-eyebrow {
+  font-family: var(--font-sub);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: .8rem;
+  color: var(--red);
+  margin: 0 0 6px;
+}
+.pg-hero h2 { margin-bottom: 10px; }
+.pg-sub { max-width: 620px; margin: 0 auto 18px; color: var(--muted); font-size: 1.05rem; }
+.pg-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.pg-badge {
+  font-family: var(--font-sub);
+  font-size: .78rem;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: var(--blue-soft);
+  border: 1px solid var(--line);
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+}
+
+/* Headings inside guide */
+.pg-body h3 { color: var(--red); font-size: 1.3rem; margin: 0 0 12px; }
+.pg-attrib { color: var(--muted); font-style: italic; margin: -4px 0 16px; }
+
+/* Quotes */
+.pg-quote {
+  margin: 0 0 20px;
+  padding: 16px 20px;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--red);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.pg-quote--lead { font-size: 1.12rem; color: var(--ink); text-align: center; border-left: 0; border-top: 3px solid var(--red); }
+.pg-quote cite { display: block; margin-top: 8px; font-style: normal; font-weight: 700; color: var(--blue); font-size: .9rem; }
+
+/* Grids + cards */
+.pg-grid { display: grid; gap: 16px; margin: 0 0 20px; }
+.pg-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.pg-grid--3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 780px) {
+  .pg-grid--2, .pg-grid--3 { grid-template-columns: 1fr; }
+}
+.pg-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.pg-card h4 {
+  font-family: var(--font-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: .95rem;
+  color: var(--blue);
+  margin: 0 0 10px;
+}
+.pg-card--warn { border-left: 3px solid var(--red); }
+.pg-card p { margin: 0; }
+
+.pg-list { list-style: none; margin: 0; padding: 0; }
+.pg-list li { position: relative; padding-left: 18px; margin-bottom: 7px; }
+.pg-list li:last-child { margin-bottom: 0; }
+.pg-list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+.pg-list--inline li { font-weight: 600; color: var(--ink); }
+
+/* Term glossary */
+.pg-terms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 24px; margin: 0; }
+@media (max-width: 780px) { .pg-terms { grid-template-columns: 1fr; } }
+.pg-term { border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.pg-term dt { font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .5px; color: var(--red); font-weight: 600; }
+.pg-term dd { margin: 2px 0 0; color: var(--body); font-size: .95rem; }
+
+/* Stroke phases */
+.pg-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+@media (max-width: 780px) { .pg-phases { grid-template-columns: 1fr; } }
+.pg-phase {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--red);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  text-align: center;
+}
+.pg-phase__pct { display: block; font-family: var(--font-head); font-size: 2.2rem; font-weight: 700; color: var(--red); line-height: 1; }
+.pg-phase__name { display: block; font-family: var(--font-sub); text-transform: uppercase; letter-spacing: 1px; color: var(--ink); margin-top: 4px; }
+.pg-phase__tag { display: block; font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.pg-phase p { margin: 0; font-size: .92rem; text-align: left; }
+
+/* Progressive power bar */
+.pg-powerbar { display: flex; gap: 4px; margin: 0 0 20px; }
+.pg-powerbar__seg {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 12px 6px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .5px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.pg-powerbar__seg b { font-family: var(--font-head); font-size: 1.1rem; }
+.pg-powerbar__seg--max { background: var(--red); color: #fff; }
+
+/* Callouts */
+.pg-callout {
+  background: var(--red-soft);
+  border-left: 3px solid var(--red);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin: 0 0 20px;
+  font-size: .95rem;
+}
+.pg-callout--blue { background: var(--blue-soft); border-left-color: var(--blue); }
+.pg-grid .pg-callout { margin: 0; }
+
+/* Blade Before Butt highlight */
+.pg-bbb {
+  display: flex; align-items: center; gap: 18px;
+  background: var(--bg-dark); color: #fff;
+  border-radius: var(--radius); padding: 18px 22px; margin-bottom: 20px;
+}
+.pg-bbb__mark { font-family: var(--font-head); font-size: 2rem; font-weight: 700; color: #fff; letter-spacing: 1px; flex-shrink: 0; }
+.pg-bbb div { font-size: .98rem; }
+.pg-bbb strong { color: #fff; }
+
+/* Checklists */
+.pg-check { list-style: none; margin: 0; padding: 0; }
+.pg-check li { position: relative; padding-left: 30px; margin-bottom: 9px; }
+.pg-check li::before {
+  content: ""; position: absolute; left: 0; top: 2px;
+  width: 18px; height: 18px; border: 2px solid var(--blue); border-radius: 5px;
+}
+.pg-steps { margin: 0; padding-left: 1.3em; }
+.pg-steps li { margin-bottom: 9px; }
+.pg-steps--compact li { margin-bottom: 7px; }
+
+.pg-fineprint { font-size: .88rem; color: var(--muted); margin: 12px 0 0; font-style: italic; }
+
+/* Mana rating */
+.pg-rate { list-style: none; margin: 0; padding: 0; }
+.pg-rate li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: .95rem; }
+.pg-rate li:last-child { border-bottom: 0; }
+.pg-scale { font-family: var(--font-sub); letter-spacing: 2px; color: var(--blue); white-space: nowrap; }
+.pg-scale-key { font-family: var(--font-body); text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); font-size: .78rem; }
+
+/* Always / Never reminders */
+.pg-reminders { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0 0; }
+@media (max-width: 780px) { .pg-reminders { grid-template-columns: 1fr; } }
+.pg-remind { border-radius: var(--radius); padding: 18px 20px; }
+.pg-remind h4 { font-family: var(--font-sub); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px; }
+.pg-remind--do { background: var(--blue-soft); }
+.pg-remind--do h4 { color: var(--blue); }
+.pg-remind--dont { background: var(--red-soft); }
+.pg-remind--dont h4 { color: var(--red); }
+
+.pg-signoff { text-align: center; font-style: italic; color: var(--ink); font-size: 1.05rem; margin: 24px 0 0; }
+
+/* =========================================================================
    OLD LONDON FONT (inlined woff2 — same as before)
    ========================================================================= */
 @font-face {

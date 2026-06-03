@@ -406,6 +406,63 @@
     syncCheatsheetFromHash();
   }
 
+  // ---- Paddling Guide modal ----
+  // Same behavior as the cheat sheet: a wider modal with a #paddling-guide
+  // shareable deep link that opens automatically and keeps the URL in sync.
+  const pgOverlay = document.getElementById('paddling-guide');
+  const pgOpen = document.getElementById('paddling-guide-open');
+  if (pgOverlay && pgOpen) {
+    const pgClose = pgOverlay.querySelector('.cheatsheet-close');
+    const PG_HASH = '#paddling-guide';
+    let pgReturnFocus = null;
+    let pgIsOpen = false;
+    function openPaddlingGuide() {
+      if (pgIsOpen) return;
+      pgReturnFocus = document.activeElement;
+      pgOverlay.classList.add('is-open');
+      lockScroll();
+      pgIsOpen = true;
+      if (pgClose) pgClose.focus();
+    }
+    function closePaddlingGuide() {
+      if (!pgIsOpen) return;
+      pgOverlay.classList.remove('is-open');
+      unlockScroll();
+      pgIsOpen = false;
+      if (pgReturnFocus && typeof pgReturnFocus.focus === 'function') {
+        pgReturnFocus.focus();
+      }
+      pgReturnFocus = null;
+      if (location.hash === PG_HASH) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+    }
+    function syncPaddlingGuideFromHash() {
+      if (location.hash === PG_HASH) {
+        openPaddlingGuide();
+      } else if (pgIsOpen) {
+        closePaddlingGuide();
+      }
+    }
+    pgOpen.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (location.hash === PG_HASH) {
+        openPaddlingGuide();
+      } else {
+        location.hash = 'paddling-guide';
+      }
+    });
+    pgClose.addEventListener('click', closePaddlingGuide);
+    pgOverlay.addEventListener('click', function (e) {
+      if (e.target === pgOverlay) closePaddlingGuide();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && pgIsOpen) closePaddlingGuide();
+    });
+    window.addEventListener('hashchange', syncPaddlingGuideFromHash);
+    syncPaddlingGuideFromHash();
+  }
+
   // ---- Copy-to-clipboard icon buttons (e.g., Zelle email) ----
   // Toggles .is-copied for ~1.4s; CSS swaps the icon and shows the tooltip.
   document.querySelectorAll('.copy-btn').forEach(function (btn) {
