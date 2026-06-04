@@ -461,6 +461,16 @@
     });
     window.addEventListener('hashchange', syncPaddlingGuideFromHash);
     syncPaddlingGuideFromHash();
+    // Section jump-nav: scroll the target heading into view inside the modal
+    // body. Uses buttons + scrollIntoView (not anchor hashes) so it doesn't
+    // disturb the #paddling-guide deep-link hash and close the modal.
+    pgOverlay.querySelectorAll('.pg-nav__link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        var id = link.getAttribute('data-target');
+        var target = id && document.getElementById(id);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
   }
 
   // ---- Copy-to-clipboard icon buttons (e.g., Zelle email) ----

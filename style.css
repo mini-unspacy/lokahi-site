@@ -1412,6 +1412,28 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
    ========================================================================= */
 .cheatsheet-panel--wide { width: min(96vw, 1080px); max-height: 92vh; }
 
+/* Popup renders the standalone guide via an iframe (single source of content) */
+.cheatsheet-panel--frame { height: 92vh; overflow: hidden; }
+.cheatsheet-panel--frame .cheatsheet-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin: 0;
+  z-index: 3;
+  box-shadow: var(--shadow-sm);
+}
+.pg-frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
+/* Standalone guide page: hide its own header when embedded in the popup */
+.pg-embed .pg-page-header { display: none; }
+.pg-embed .pg-page { padding-top: 28px; }
+
 .pg-body { line-height: 1.7; }
 
 /* Hero */
@@ -1437,6 +1459,60 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
   border: 1px solid var(--line);
   padding: 5px 12px;
   border-radius: var(--radius-pill);
+}
+
+/* Standalone Paddling Guide page (paddling-guide.html) */
+.pg-page-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.pg-back {
+  font-family: var(--font-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+.pg-back:hover { color: var(--red); }
+.pg-page {
+  max-width: 1080px;
+  padding-top: 40px;
+  padding-bottom: 64px;
+}
+
+/* Section nav — understated inline text links */
+.pg-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 22px;
+  margin-top: 14px;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.pg-nav__link {
+  font-family: var(--font-sub);
+  font-size: .74rem;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 2px 0;
+  border-bottom: 1.5px solid transparent;
+  cursor: pointer;
+  transition: color var(--speed) var(--ease), border-color var(--speed) var(--ease);
+}
+.pg-nav__link:hover,
+.pg-nav__link:focus-visible {
+  color: var(--red);
+  border-bottom-color: var(--red);
+  outline: none;
 }
 
 /* Headings inside guide */
@@ -1467,7 +1543,7 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
   background: var(--bg-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 18px 20px;
+  padding: 20px 24px;
 }
 .pg-card h4 {
   font-family: var(--font-sub);
@@ -1478,7 +1554,81 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
   margin: 0 0 10px;
 }
 .pg-card--warn { border-left: 3px solid var(--red); }
+.pg-card--mb { margin-bottom: 20px; }
 .pg-card p { margin: 0; }
+
+/* Body Mechanics: stages stacked with foundation at the base. A single up-arrow
+   "spine" on the left shows you build upward; each tier carries a short hint. */
+.pg-mech {
+  display: grid;
+  grid-template-columns: 38px 136px 1fr;
+  grid-template-rows: repeat(3, auto);
+  gap: 18px 14px;
+  align-items: stretch;
+  margin: 0 0 20px;
+}
+.pg-mech__spine {
+  grid-column: 1;
+  grid-row: 1 / 4;
+  position: relative;
+}
+.pg-mech__spine::before { /* vertical shaft */
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 18px;
+  bottom: 0;
+  width: 7px;
+  border-radius: 7px 7px 4px 4px;
+  background: var(--red);
+}
+.pg-mech__spine::after { /* arrowhead pointing up */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 20px solid var(--red);
+}
+.pg-mech__label {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 3px;
+  padding: 6px 8px;
+}
+.pg-mech__tier {
+  font-family: var(--font-sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--red);
+  line-height: 1.25;
+}
+.pg-mech__hint { font-size: .75rem; color: var(--muted); font-style: italic; }
+.pg-card--step { grid-column: 3; padding: 22px 26px; }
+.pg-card--step h4 { margin-bottom: 12px; }
+.pg-card--step .pg-list li { margin-bottom: 10px; }
+@media (max-width: 780px) {
+  .pg-mech { grid-template-columns: 1fr; grid-template-rows: none; gap: 8px; }
+  .pg-mech__spine { display: none; }
+  .pg-mech__label {
+    grid-column: 1;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 6px 2px 0;
+  }
+  .pg-card--step { grid-column: 1; }
+}
 
 .pg-list { list-style: none; margin: 0; padding: 0; }
 .pg-list li { position: relative; padding-left: 18px; margin-bottom: 7px; }
@@ -1509,28 +1659,48 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
 .pg-phase__tag { display: block; font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
 .pg-phase p { margin: 0; font-size: .92rem; text-align: left; }
 
-/* Progressive power bar */
-.pg-powerbar { display: flex; gap: 4px; margin: 0 0 20px; }
-.pg-powerbar__seg {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 12px 6px;
-  background: var(--blue-soft);
-  color: var(--blue);
-  font-size: .72rem; text-transform: uppercase; letter-spacing: .5px;
-  border-radius: var(--radius-sm);
-  text-align: center;
+/* Progressive power: full-width horizontal gradient arrow (low -> high) with
+   the POWER OUTPUT label set inside the arrow. */
+.pg-power { margin: 0 0 20px; }
+.pg-power__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  background: linear-gradient(to right, #ffd23f 0%, #f9a01b 48%, #ed1c24 100%);
+  clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 50%, calc(100% - 28px) 100%, 0 100%);
+  border-radius: 8px 0 0 8px;
 }
-.pg-powerbar__seg b { font-family: var(--font-head); font-size: 1.1rem; }
-.pg-powerbar__seg--max { background: var(--red); color: #fff; }
+.pg-power__cap {
+  padding-left: 22px;
+  font-family: var(--font-sub);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.pg-power__phases {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-right: 28px; /* align under the arrow shaft, not the head */
+  font-family: var(--font-sub);
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--muted);
+}
 
 /* Callouts */
 .pg-callout {
   background: var(--red-soft);
   border-left: 3px solid var(--red);
   border-radius: var(--radius-sm);
-  padding: 14px 18px;
+  padding: 16px 20px;
   margin: 0 0 20px;
   font-size: .95rem;
+  line-height: 1.6;
 }
 .pg-callout--blue { background: var(--blue-soft); border-left-color: var(--blue); }
 .pg-grid .pg-callout { margin: 0; }
@@ -1576,6 +1746,46 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
 .pg-remind--dont h4 { color: var(--red); }
 
 .pg-signoff { text-align: center; font-style: italic; color: var(--ink); font-size: 1.05rem; margin: 24px 0 0; }
+
+/* --- Hover / visual flair --- */
+.pg-card {
+  transition: box-shadow var(--speed) var(--ease), border-color var(--speed) var(--ease), transform var(--speed) var(--ease);
+}
+.pg-card:hover { box-shadow: var(--shadow-sm); border-color: var(--line-strong); }
+.pg-phase {
+  transition: transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
+}
+.pg-phase:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); }
+.pg-term { transition: border-color var(--speed) var(--ease); }
+.pg-term:hover { border-bottom-color: var(--red); }
+.pg-quote {
+  transition: border-color var(--speed) var(--ease), background var(--speed) var(--ease);
+}
+.pg-callout { transition: transform var(--speed) var(--ease); }
+.pg-callout:hover { transform: translateX(2px); }
+/* the power arrow gets a gentle sheen on hover */
+.pg-power__bar { transition: filter var(--speed) var(--ease); }
+.pg-power:hover .pg-power__bar { filter: saturate(1.15) brightness(1.03); }
+
+/* --- Print: clean, paper-friendly version of the guide --- */
+@media print {
+  .pg-page-header, .pg-nav, .pg-back { display: none !important; }
+  .pg-page { max-width: none; padding: 0 0 12px; }
+  .pg-body { line-height: 1.5; }
+  .pg-card, .pg-quote, .pg-callout, .pg-bbb, .pg-phase, .cheatsheet-table-wrap, .pg-reminders {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+  .pg-body h3 { break-after: avoid; }
+  .pg-card:hover, .pg-phase:hover { transform: none; box-shadow: none; }
+  a { color: inherit; text-decoration: none; }
+  /* keep brand colors / gradients in print */
+  .pg-power__bar, .pg-mech__spine::before, .pg-mech__spine::after,
+  .pg-phase, .cheatsheet-table thead th, .pg-bbb {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
 
 /* =========================================================================
    OLD LONDON FONT (inlined woff2 — same as before)
