@@ -1747,6 +1747,40 @@ body.nav-open .hamburger span::after  { transform: rotate(-45deg) translate(5px,
 
 .pg-signoff { text-align: center; font-style: italic; color: var(--ink); font-size: 1.05rem; margin: 24px 0 0; }
 
+/* --- Power Cycle interactive (wheel + paddler) --- */
+.pg-deckwrap {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 20px;
+}
+.pg-deck { position: relative; width: 280px; height: 299px; flex: 0 0 auto; touch-action: none; cursor: grab; }
+.pg-deck.dragging { cursor: grabbing; }
+.pg-deck svg { display: block; }
+.pg-deck__hub {
+  position: absolute;
+  left: 50%; top: 50%;
+  /* nudge down to match the wheel centre (viewBox is taller than wide) */
+  transform: translate(-50%, calc(-50% + 9px));
+  width: 138px; height: 138px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; pointer-events: none;
+}
+.pg-deck__phase { font-family: var(--font-sub); text-transform: uppercase; letter-spacing: 1.5px; color: var(--red); font-size: 1rem; }
+.pg-deck__pct { font-family: var(--font-head); font-size: 2rem; line-height: 1; color: var(--ink); margin-top: 2px; }
+.pg-deck__pctlabel { font-size: .6rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-top: 3px; }
+.pg-stage { background: linear-gradient(#eaf2f6, #d6e6ee 70%, #cfe0ea); border-radius: 14px; border: 1px solid var(--line); }
+@media (max-width: 600px) {
+  .pg-deck { width: 240px; height: 256px; }
+  .pg-stage { width: 280px; height: 205px; }
+}
+
 /* --- Hover / visual flair --- */
 .pg-card {
   transition: box-shadow var(--speed) var(--ease), border-color var(--speed) var(--ease), transform var(--speed) var(--ease);

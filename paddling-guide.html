@@ -258,6 +258,22 @@
 
       <hr class="cheatsheet-rule">
 
+      <!-- POWER CYCLE INTERACTIVE -->
+      <h3 id="pg-cycle">The Power Cycle</h3>
+      <div class="pg-deckwrap">
+        <div class="pg-deck" id="pg-deck">
+          <svg id="pg-dial" width="280" height="299" viewBox="-150 -170 300 320" aria-label="Stroke phase wheel"></svg>
+          <div class="pg-deck__hub">
+            <span class="pg-deck__phase" id="pg-hubPhase">Catch</span>
+            <span class="pg-deck__pct" id="pg-hubPct">60%</span>
+            <span class="pg-deck__pctlabel">Power Output</span>
+          </div>
+        </div>
+        <svg id="pg-paddler" width="300" height="220" viewBox="0 0 300 220" class="pg-stage" aria-label="Paddler animation"></svg>
+      </div>
+
+      <hr class="cheatsheet-rule">
+
       <!-- CHANGES -->
       <h3 id="pg-changes">Changes &mdash; Side Switching</h3>
       <blockquote class="pg-quote">
@@ -421,5 +437,158 @@
       </div>
   </div>
 </main>
+
+<script>
+(function(){
+  const dial=document.getElementById('pg-dial');
+  if(!dial) return;
+  const SVGNS="http://www.w3.org/2000/svg";
+  const deck=document.getElementById('pg-deck');
+  const paddlerSvg=document.getElementById('pg-paddler');
+  const hubPhase=document.getElementById('pg-hubPhase');
+  const hubPct=document.getElementById('pg-hubPct');
+
+  const AUTO=20/60;        // fixed 20 strokes/min, in cycles per second
+  let phase=0, vel=AUTO, dragging=false, lastAngle=0, lastT=0;
+
+  const WATER=0.75;
+  function powerAt(p){ return p<WATER ? 0.6+0.4*(p/WATER) : 0; }
+  function phaseName(p){ return p<0.15?"Catch":p<0.65?"Pull":p<0.75?"Push":"Recovery"; }
+  function hx(n){return n.toString(16).padStart(2,'0');}
+  function lerpColor(a,b,t){
+    const ar=parseInt(a.slice(1,3),16),ag=parseInt(a.slice(3,5),16),ab=parseInt(a.slice(5,7),16);
+    const br=parseInt(b.slice(1,3),16),bg=parseInt(b.slice(3,5),16),bb=parseInt(b.slice(5,7),16);
+    return '#'+hx(Math.round(ar+(br-ar)*t))+hx(Math.round(ag+(bg-ag)*t))+hx(Math.round(ab+(bb-ab)*t));
+  }
+  function powerColor(p){ const t=Math.min(1,Math.max(0,p/WATER)); return lerpColor('#ffd23f','#ed1c24',t); }
+
+  // ---- wheel ----
+  const RO=140, RI=92, N=96;
+  function pt(r,deg){const a=deg*Math.PI/180;return [r*Math.cos(a), r*Math.sin(a)];}
+  function annular(a0,a1,ri,ro){
+    const [x0o,y0o]=pt(ro,a0),[x1o,y1o]=pt(ro,a1),[x1i,y1i]=pt(ri,a1),[x0i,y0i]=pt(ri,a0);
+    return `M${x0o} ${y0o} A${ro} ${ro} 0 0 1 ${x1o} ${y1o} L${x1i} ${y1i} A${ri} ${ri} 0 0 0 ${x0i} ${y0i} Z`;
+  }
+  const disc=document.createElementNS(SVGNS,'g'); dial.appendChild(disc);
+  for(let i=0;i<N;i++){
+    const p0=i/N,p1=(i+1)/N,a0=-90+p0*360,a1=-90+p1*360;
+    const seg=document.createElementNS(SVGNS,'path');
+    seg.setAttribute('d',annular(a0,a1,RI,RO));
+    seg.setAttribute('fill', p0<WATER ? powerColor(p0) : lerpColor('#c4ced5','#e7edf0',(p0-WATER)/(1-WATER)));
+    disc.appendChild(seg);
+  }
+  const bands=[{p:0,l:'Catch'},{p:0.15,l:'Pull'},{p:0.65,l:'Push'},{p:0.75,l:'Recovery'}];
+  const bounds=[0,0.15,0.65,0.75,1.0];
+  bounds.forEach(p=>{
+    const a=-90+p*360,[x0,y0]=pt(RI,a),[x1,y1]=pt(RO,a);
+    const t=document.createElementNS(SVGNS,'line');
+    t.setAttribute('x1',x0);t.setAttribute('y1',y0);t.setAttribute('x2',x1);t.setAttribute('y2',y1);
+    t.setAttribute('stroke','rgba(255,255,255,.7)');t.setAttribute('stroke-width','2');disc.appendChild(t);
+  });
+  bands.forEach((b,i)=>{
+    const pmid=(b.p+bounds[i+1])/2,a=-90+pmid*360,[x,y]=pt((RI+RO)/2,a);
+    const t=document.createElementNS(SVGNS,'text');
+    t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('fill','#fff');
+    t.setAttribute('font-family','Oswald,sans-serif');t.setAttribute('font-size','12');t.setAttribute('letter-spacing','1');
+    t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('transform',`rotate(${a+90} ${x} ${y})`);t.textContent=b.l.toUpperCase();disc.appendChild(t);
+  });
+  const headM=document.createElementNS(SVGNS,'path');
+  headM.setAttribute('d',`M0 ${-RO-12} L-9 ${-RO-26} L9 ${-RO-26} Z`);
+  headM.setAttribute('fill','#222'); dial.appendChild(headM);
+
+  // ---- paddler ----
+  function mk(tag,a){const e=document.createElementNS(SVGNS,tag);for(const k in a)e.setAttribute(k,a[k]);return e;}
+  paddlerSvg.appendChild(mk('line',{x1:0,y1:150,x2:300,y2:150,stroke:'rgba(0,82,128,.35)','stroke-width':2}));
+  paddlerSvg.appendChild(mk('path',{d:'M40 150 Q150 196 285 150 L285 160 Q150 210 40 160 Z',fill:'#7a5a3c',opacity:'.92'}));
+  paddlerSvg.appendChild(mk('rect',{x:120,y:138,width:46,height:8,rx:3,fill:'#5e4630'}));
+  const shaft=mk('line',{stroke:'#111','stroke-width':5,'stroke-linecap':'round'});
+  const blade=mk('path',{fill:'#111'});
+  const torso=mk('line',{stroke:'#1f3d4c','stroke-width':11,'stroke-linecap':'round'});
+  const topArm=mk('line',{stroke:'#2a6076','stroke-width':7,'stroke-linecap':'round'});
+  const botArm=mk('line',{stroke:'#2a6076','stroke-width':7,'stroke-linecap':'round'});
+  const head2=mk('circle',{r:12,fill:'#e8b07a'});
+  paddlerSvg.appendChild(shaft);paddlerSvg.appendChild(blade);
+  paddlerSvg.appendChild(torso);paddlerSvg.appendChild(topArm);paddlerSvg.appendChild(botArm);paddlerSvg.appendChild(head2);
+
+  const HIP=[150,148], LT=58;
+  const KF=[
+    {p:0.00, torso:40, th:[212,70], bh:[242,140]},
+    {p:0.15, torso:33, th:[205,72], bh:[232,140]},
+    {p:0.40, torso:10, th:[186,76], bh:[188,140]},
+    {p:0.65, torso:-6, th:[170,80], bh:[156,138]},
+    {p:0.75, torso:-17,th:[158,82], bh:[126,138]},
+    {p:0.83, torso:-8, th:[160,72], bh:[120,112]},
+    {p:0.92, torso:20, th:[200,56], bh:[150,96]},
+    {p:1.00, torso:40, th:[212,70], bh:[242,140]},
+  ];
+  function lp(a,b,t){return a+(b-a)*t;}
+  function pose(p){
+    let i=0; while(i<KF.length-1 && p>=KF[i+1].p) i++;
+    const A=KF[i],B=KF[Math.min(i+1,KF.length-1)],span=(B.p-A.p)||1,t=(p-A.p)/span;
+    return {torso:lp(A.torso,B.torso,t),th:[lp(A.th[0],B.th[0],t),lp(A.th[1],B.th[1],t)],bh:[lp(A.bh[0],B.bh[0],t),lp(A.bh[1],B.bh[1],t)]};
+  }
+  function drawPaddler(p){
+    const ps=pose(p),tr=ps.torso*Math.PI/180;
+    const sh=[HIP[0]+LT*Math.sin(tr),HIP[1]-LT*Math.cos(tr)];
+    const hd=[sh[0]+16*Math.sin(tr),sh[1]-16*Math.cos(tr)];
+    torso.setAttribute('x1',HIP[0]);torso.setAttribute('y1',HIP[1]);torso.setAttribute('x2',sh[0]);torso.setAttribute('y2',sh[1]);
+    head2.setAttribute('cx',hd[0]);head2.setAttribute('cy',hd[1]-2);
+    topArm.setAttribute('x1',sh[0]);topArm.setAttribute('y1',sh[1]);topArm.setAttribute('x2',ps.th[0]);topArm.setAttribute('y2',ps.th[1]);
+    botArm.setAttribute('x1',sh[0]);botArm.setAttribute('y1',sh[1]);botArm.setAttribute('x2',ps.bh[0]);botArm.setAttribute('y2',ps.bh[1]);
+    let dx=ps.bh[0]-ps.th[0],dy=ps.bh[1]-ps.th[1];const len=Math.hypot(dx,dy)||1;dx/=len;dy/=len;
+    const tip=[ps.bh[0]+dx*40,ps.bh[1]+dy*40];
+    shaft.setAttribute('x1',ps.th[0]);shaft.setAttribute('y1',ps.th[1]);shaft.setAttribute('x2',tip[0]);shaft.setAttribute('y2',tip[1]);
+    const px=-dy,py=dx;
+    const b1=[tip[0]-px*6-dx*2,tip[1]-py*6-dy*2],b2=[tip[0]+px*6-dx*2,tip[1]+py*6-dy*2],
+          b3=[tip[0]+px*5+dx*14,tip[1]+py*5+dy*14],b4=[tip[0]-px*5+dx*14,tip[1]-py*5+dy*14];
+    blade.setAttribute('d',`M${b1[0]} ${b1[1]} L${b2[0]} ${b2[1]} L${b3[0]} ${b3[1]} L${b4[0]} ${b4[1]} Z`);
+  }
+
+  function render(){
+    phase=((phase%1)+1)%1;
+    disc.setAttribute('transform',`rotate(${-phase*360})`);
+    drawPaddler(phase);
+    const pw=powerAt(phase);
+    hubPhase.textContent=phaseName(phase);
+    hubPct.textContent= pw>0 ? Math.round(pw*100)+'%' : '—';
+  }
+
+  let prev=performance.now();
+  function tick(now){
+    const dt=Math.min(0.05,(now-prev)/1000); prev=now;
+    if(!dragging){
+      // ease angular velocity smoothly back toward the steady 20-spm rhythm
+      vel = AUTO + (vel-AUTO)*Math.pow(0.04, dt);
+      phase += vel*dt;
+      render();
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  function angleFromEvent(e){
+    const r=deck.getBoundingClientRect();
+    return Math.atan2(e.clientY-(r.top+r.height/2), e.clientX-(r.left+r.width/2));
+  }
+  deck.addEventListener('pointerdown',e=>{
+    dragging=true; vel=0; deck.classList.add('dragging'); deck.setPointerCapture(e.pointerId);
+    lastAngle=angleFromEvent(e); lastT=performance.now();
+  });
+  deck.addEventListener('pointermove',e=>{
+    if(!dragging) return;
+    const a=angleFromEvent(e); let da=a-lastAngle;
+    if(da>Math.PI)da-=2*Math.PI; if(da<-Math.PI)da+=2*Math.PI;
+    const dphase=da/(2*Math.PI); phase+=dphase;
+    const now=performance.now(),dt=Math.max(0.001,(now-lastT)/1000);
+    vel=Math.max(-4,Math.min(4,dphase/dt)); lastAngle=a; lastT=now; render();
+  });
+  function endDrag(){ if(dragging){ dragging=false; deck.classList.remove('dragging'); } }
+  deck.addEventListener('pointerup',endDrag);
+  deck.addEventListener('pointercancel',endDrag);
+
+  render();
+})();
+</script>
 </body>
 </html>
